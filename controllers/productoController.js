@@ -26,7 +26,7 @@ exports.createProductoForm = (req, res) => {
         return res.status(500).send("Error al obtener marcas");
       }
       console.log(marcas);
-      res.render("productos/create", { categorias, marcas });
+      res.render("Productos/create", { categorias, marcas });
     })
   });
 };
