@@ -14,7 +14,7 @@ const login = (req, res) => {
   }
 
   // Buscar usuario en la base de datos
-  db.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
+  db.query('SELECT a.*, b.nombre perfil FROM users a join perfiles b on a.idper=b.id WHERE email = ?', [email], (err, results) => {
     if (err) {
       console.log(err);
       return res.status(500).json({ message: 'Error en la consulta a la base de datos' });
@@ -61,6 +61,13 @@ const login = (req, res) => {
       console.log("Sesión guardada usu:", req.session.user);
 
       const userCache = { id: user.id, email: user.email };  // Suponiendo que tienes un objeto de usuario
+      
+      req.session.usuarioMain = {
+        usuario: user.usuario,
+        email: user.email,
+        perfil: user.perfil,
+        idper: user.idper
+      };
 
       // Si las credenciales son correctas, generar un token JWT
       const authToken = jwt.sign(

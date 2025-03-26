@@ -1,47 +1,61 @@
 <!-- Menú Lateral -->
 <nav class="vertical-menu">
-    <ul>
-      <li><a href="/clientes">Clientes</a></li>
-      <li><a href="/productos">Productos</a></li>
-      <li><a href="/usuarios">Usuarios</a></li>
-      <li><a href="/cotizaciones">Cotizaciones</a></li>
-      
-      
-       
-    </ul>
-  </nav> 
+  <ul>
+    <li><a href="/clientes">Clientes</a></li>
+    <li><a href="/productos">Productos</a></li>
+    <li><a href="/usuarios">Usuarios</a></li>
+    <li><a href="/cotizaciones">Cotizaciones</a></li>
 
-  <!--**********************************
+
+
+  </ul>
+</nav>
+
+<!--**********************************
             Sidebar start
 ***********************************-->
 <div class="deznav">
   <div class="deznav-scroll">
     <ul class="metismenu" id="menu">
       <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-              <i class="flaticon-025-dashboard"></i>
-              <span class="nav-text">Menu App</span>
-            </a>
+          <i class="flaticon-025-dashboard"></i>
+          <span class="nav-text">Menu App</span>
+        </a>
         <ul aria-expanded="false">
-          <li><a href="/admin/licencias">Licencias</a></li>
-          <li><a href="/clientes">Clientes</a></li>
-          <li><a href="/productos">Productos</a></li>
-          <!-- <li><a href="/usuarios">Usuarios</a></li> -->
-          <li><a href="/cotizaciones">Cotizaciones</a></li>
-          <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Aplicación</a>
-            <ul aria-expanded="false">
-              <li><a href="/compania/edit">Compañia</a></li>
-              <li><a href="/usuarios">Usuarios</a></li>
-              <!-- <li><a href="email-read.html">Read</a></li> -->
-          </ul>
-          </li>
+          <% if (usuarioMain) { %>
+            <% if (usuarioMain.idper==1) { %>
+              <li><a href="/admin/licencias">Licencias</a></li>
+              <% } %>
+                <li><a href="/clientes">Clientes</a></li>
+                <li><a href="/productos">Productos</a></li>
+                <!-- <li><a href="/usuarios">Usuarios</a></li> -->
+                <li><a href="/cotizaciones">Cotizaciones</a></li>
+                <% if (usuarioMain.idper==2) { %>
+                  <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Aplicación</a>
+                    <ul aria-expanded="false">
+                      <li><a href="/compania/edit">Compañia</a></li>
+                      <li><a href="/usuarios">Usuarios</a></li>
+                      <!-- <li><a href="email-read.html">Read</a></li> -->
+                    </ul>
+                  </li>
+                  <% } else { %>
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Aplicación</a>
+                      <ul aria-expanded="false">
+                        <li><a href="/usuarios">Usuarios</a></li>
+                        <!-- <li><a href="email-read.html">Read</a></li> -->
+                      </ul>
+                    </li>
+                  <% } %>
+                
+                <% } %>
 
-          
         </ul>
       </li>
     </ul>
     <div class="copyright">
       <p><strong>AllCot Version 1.0</strong> © 2025 All Rights Reserved</p>
-      <p class="fs-12">Cotización<span class="heart"></span> por eGalera</p>
+      <p class="fs-12">Cotización<span class="heart"></span> por eGalera Designer</p>
+
     </div>
   </div>
 </div>

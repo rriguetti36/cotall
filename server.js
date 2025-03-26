@@ -60,6 +60,7 @@ app.use(session({
 app.use((req, res, next) => {
   res.locals.idcia = req.session.cia ? req.session.cia.idcia : null;
   res.locals.iduser = req.session.user ? req.session.user.iduser : null;
+  res.locals.usuarioMain = req.session.usuarioMain || null;
   next();
 });
 
