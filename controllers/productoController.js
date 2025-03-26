@@ -10,7 +10,7 @@ exports.getAllPoductos = (req, res) => {
       return res.status(500).send("Error al obtener Productos " + err);
     }
     
-    res.render("productos/index", { productos });
+    res.render("Productos/index", { productos });
   });
 };
 
@@ -78,7 +78,7 @@ exports.editProductoForm = (req, res) => {
           return res.status(500).send("Error al obtener marcas");
         }
         console.log(marcas);
-        res.render("productos/edit", { producto, categorias, marcas });
+        res.render("Productos/edit", { producto, categorias, marcas });
       })
     });
     //res.render("productos/edit", { producto });
