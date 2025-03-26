@@ -16,6 +16,7 @@ const login = (req, res) => {
   // Buscar usuario en la base de datos
   db.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
     if (err) {
+      console.log(err);
       return res.status(500).json({ message: 'Error en la consulta a la base de datos' });
     }
     //console.log(results);
