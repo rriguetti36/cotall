@@ -91,11 +91,21 @@
             </div>
             <div class="mb-3 col-md-6">
               <label class="form-label">Stock</label>
-              <input type="text" class="form-control" id="stock" name="stock">
+              <div class="position-relative">
+                <input type="text" class="form-control" id="stock" name="stock">
+                <i class="bi bi-question-circle-fill position-absolute top-50 end-0 translate-middle-y me-3 text-primary"
+                    data-bs-toggle="tooltip" title="Digita cantidad de unidades que tienes en stock"
+                    style="cursor: pointer; font-size: 1.2em;"></i>
+              </div>
             </div>
             <div class="mb-3 col-md-6">
               <label class="form-label">% impuesto IGV</label>
-              <input type="text" class="form-control" id="impuesto" name="impuesto">
+              <div class="position-relative">
+                <input type="text" class="form-control" id="impuesto" name="impuesto" value="<%= compania.mtoimp %>">
+                <i class="bi bi-question-circle-fill position-absolute top-50 end-0 translate-middle-y me-3 text-primary"
+                    data-bs-toggle="tooltip" title="IGV al producto. Es editable si no desea modificar este tomará el IGV configurado en la CIA."
+                    style="cursor: pointer; font-size: 1.2em;"></i>
+              </div>
             </div>
           </div>
           <div class="row">

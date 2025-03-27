@@ -1,6 +1,7 @@
 // /controllers/clienteController.js
 const Producto = require('../models/productoModel');
 const Tablas = require('../models/tablasModel');
+const companias = require('../models/companiaModel');
 
 exports.getAllPoductos = (req, res) => {
   console.log(res.locals.idcia);
@@ -9,7 +10,7 @@ exports.getAllPoductos = (req, res) => {
       console.error("Error al obtener productos " + err);
       return res.status(500).send("Error al obtener Productos " + err);
     }
-    
+
     res.render("Productos/index", { productos });
   });
 };
@@ -32,7 +33,13 @@ exports.createProductoForm = (req, res) => {
           return res.status(500).send("Error al obtener activos");
         }
         console.log(activos);
-        res.render("Productos/Create", { categorias, marcas, activos });
+        companias.getById(res.locals.idcia, (err, compania) => {
+          if (err) {
+            return res.status(500).send("Error al obtener activos");
+          }
+          console.log(compania)
+          res.render("Productos/Create", { categorias, marcas, activos, compania });
+        })
       })
     })
   });
@@ -43,17 +50,17 @@ exports.createProducto = (req, res) => {
     return res.status(400).send('No se subió ninguna imagen');
   } */
   //console.log('req.body:' + req.body.codigo);
-  const { codigo ,nombre ,descripcion ,idcat ,idmar ,tipo ,precio ,preciorebaja ,stock ,impuesto ,imagen, idcia} = req.body;
+  const { codigo, nombre, descripcion, idcat, idmar, tipo, precio, preciorebaja, stock, impuesto, imagen, idcia } = req.body;
 
   let imagenUrl = null;
-  
+
   // Si se ha subido una nueva imagen, almacenamos la URL
   if (req.file) {
     //console.log('entra en req.file' + req.file.filename);
     imagenUrl = '/uploads/' + req.file.filename;
   }
-  
-  const producto = { codigo ,nombre ,descripcion ,idcat ,idmar ,tipo ,precio ,preciorebaja ,stock ,impuesto ,imagen, idcia };
+
+  const producto = { codigo, nombre, descripcion, idcat, idmar, tipo, precio, preciorebaja, stock, impuesto, imagen, idcia };
 
   producto.imagen = imagenUrl;
   producto.idcia = res.locals.idcia;
@@ -79,7 +86,7 @@ exports.editProductoForm = (req, res) => {
         return res.status(500).send("Error al obtener categorias");
       }
       console.log(categorias);
-  
+
       Tablas.Marcas((err, marcas) => {
         if (err) {
           return res.status(500).send("Error al obtener marcas");
@@ -96,20 +103,20 @@ exports.editProducto = (req, res) => {
   //console.log('req.params.id: '+ req.params.id);
   const { id } = req.params;
   //console.log('req.body: '+ req.body);
-  const { codigo ,nombre ,descripcion ,idcat ,idmar ,tipo ,precio ,preciorebaja ,stock ,impuesto ,imagen, imagen_u } = req.body;
+  const { codigo, nombre, descripcion, idcat, idmar, tipo, precio, preciorebaja, stock, impuesto, imagen, imagen_u } = req.body;
 
   let imagenUrl = null;
-  
+
   // Si se ha subido una nueva imagen, almacenamos la URL
   if (req.file) {
     console.log('entra en req.file' + req.file.filename);
     imagenUrl = '/uploads/' + req.file.filename;
   }
-  else{
+  else {
     imagenUrl = imagen_u;
   }
 
-  const producto = { codigo ,nombre ,descripcion ,idcat ,idmar ,tipo ,precio ,preciorebaja ,stock ,impuesto ,imagen };
+  const producto = { codigo, nombre, descripcion, idcat, idmar, tipo, precio, preciorebaja, stock, impuesto, imagen };
   producto.imagen = imagenUrl;
   console.log(producto);
   Producto.update(id, producto, (err) => {
