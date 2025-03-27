@@ -19,13 +19,13 @@ exports.createProductoForm = (req, res) => {
     if (err) {
       return res.status(500).send("Error al obtener categorias");
     }
-    //console.log(categorias);
+    console.log(categorias);
 
     Tablas.Marcas((err, marcas) => {
       if (err) {
         return res.status(500).send("Error al obtener marcas");
       }
-      //console.log(marcas);
+      console.log(marcas);
 
       Tablas.activo(res.locals.idcia, (err, activos) => {
         if (err) {
