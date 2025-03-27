@@ -90,6 +90,19 @@ class Tablas {
           callback(null, results);
         });
       }
+
+      static activo(idcia, callback) {
+        db.query(`select a.* from activo a
+                    left join (SELECT case when indprd=1 then 1 else 0 end indprd, case when indser=1 then 2 else 0 end indser FROM compania where id=?) b on 
+                    a.activo=indser or a.activo=indprd
+                    where b.indprd is not null`, [idcia], (err, results) => {
+          if (err) {
+            return callback(err);
+          }
+          callback(null, results);
+        });
+      }
+
   }
   
   module.exports = Tablas;

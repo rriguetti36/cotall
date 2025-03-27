@@ -8,7 +8,7 @@
 <div class="col-xl-12 col-lg-12">
   <div class="card">
     <div class="card-header">
-      <h4 class="card-title">Crear Producto</h4>
+      <h4 class="card-title">Crear Productos y Servicios</h4>
     </div>
     <div class="card-body">
       <div class="basic-form">
@@ -16,22 +16,34 @@
 
           <div class="row">
             <div class="mb-3 col-md-6">
-              <label class="form-label">Tipo Producto</label>
+              <label class="form-label">Tipo Producto o Servicio ofrecido</label>
               <select id="tipo" name="tipo" class="default-select form-control wide">
-                <option value="1">Simple</option>
-                <option value="2">Variado</option>
-                <option value="3">Grupo</option>
-                <option value="4">Servicio</option>
-                <option value="5">Virtual</option>
+                <% activos.forEach(activo=> { %>
+                  <option value="<%= activo.id %>">
+                    <%= activo.nombre %>
+                  </option>
+                  <% }); %>
               </select>
             </div>
             <div class="mb-3 col-md-6">
               <label class="form-label">Titulo</label>
-              <input type="text" class="form-control" id="nombre" name="nombre" required>
+              <div class="position-relative">
+                <input type="text" class="form-control" id="nombre" name="nombre" required>
+                <i class="bi bi-question-circle-fill position-absolute top-50 end-0 translate-middle-y me-3 text-primary"
+                  data-bs-toggle="tooltip" title="Escribe el nombre del Producto o Servicio que estás registrando."
+                  style="cursor: pointer; font-size: 1.2em;"></i>
+              </div>
+
             </div>
             <div class="mb-3 col-md-6">
-              <label class="form-label">Descripcion del producto</label>
-              <textarea class="form-control" rows="9" id="descripcion" name="descripcion"></textarea>
+              <label class="form-label">Descripcion del producto o Servicio</label>
+              <div class="position-relative">
+                <textarea class="form-control" rows="9" id="descripcion" name="descripcion"></textarea>
+                <i class="bi bi-question-circle-fill position-absolute top-50 end-0 translate-middle-y me-3 text-primary"
+                  data-bs-toggle="tooltip" title="Escribe una descripción corta del Producto Servicio. Detalles, Características, funciones o lo que describa los que se ofrece."
+                  style="cursor: pointer; font-size: 1.2em;"></i>
+              </div>
+              
             </div>
             <div class="mb-3 col-md-6">
               <label class="form-label">Codigo SKU</label>
@@ -42,6 +54,7 @@
             <div class="mb-3 col-md-6">
               <label class="form-label">Categoria</label>
               <select id="idcat" name="idcat" class="default-select form-control wide">
+                <option value="0">Sin Marca</option>
                 <% categorias.forEach(categoria=> { %>
                   <option value="<%= categoria.id %>">
                     <%= categoria.nombre %>
@@ -86,7 +99,7 @@
             </div>
           </div>
 
-          <button type="submit" class="btn btn-primary">Crear Cliente</button>
+          <button type="submit" class="btn btn-primary">Crear Producto</button>
         </form>
       </div>
     </div>
