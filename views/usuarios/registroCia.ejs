@@ -11,10 +11,15 @@
                                     <a href="index.html"><img src="images/logo-white.png" class="light-login"
                                             alt=""></a>
                                 </div>
+                                <% if (mensaje) { %>
+                                    <div class="alert alert-danger" role="alert">
+                                      <%= mensaje %>
+                                    </div>
+                                  <% } %>
                                 <h4 class="text-center mb-4">Ahora Registra tu Empresa (CIA)</h4>
                                 <form action="/compania/createregistroCia/<%= userid %>" method="post">
-                                    <input type="text" value="<%= userid %>" id="userid" name="userid">
-                                    <input type="text" value="P" id="tipovig" name="tipovig">
+                                    <input type="hidden" value="<%= userid %>" id="userid" name="userid">
+                                    <input type="hidden" value="P" id="tipovig" name="tipovig">
                                     <div class="row">
                                         <div class="col-md-12 mb-3">
                                             <label class="mb-1"><strong>Linea de Negocio : </strong></label>

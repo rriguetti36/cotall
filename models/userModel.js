@@ -95,6 +95,15 @@ class users {
       callback(null, results);
     });
   }
+
+  static existemail(email, callback) {
+    db.query("select count(*) existe from users WHERE email = ?", [email], (err, results) => {
+      if (err) {
+        return callback(err);
+      }
+      callback(null, results[0]);
+    });
+  }
 }
 
 

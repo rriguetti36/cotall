@@ -25,17 +25,6 @@ const login = (req, res) => {
       return res.render('login', { layout: 'layouts/layoutLog', errorMessage: 'Usuario no encontrado' });
     }
 
-    // const password = 'passwordseguro';
-    // const saltRounds = 10;
-    
-    // bcrypt.hash(password, saltRounds, (err, hash) => {
-    //     if (err) {
-    //         console.error('Error generando hash:', err);
-    //     } else {
-    //         console.log('Hash generado:', hash);
-    //     }
-    // });
-
     const user = results[0];
     console.log(password);
     console.log(user.password);

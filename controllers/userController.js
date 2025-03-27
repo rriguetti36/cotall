@@ -7,28 +7,40 @@ exports.createUsuario = (req, res) => {
   const { usuario, email, password, nombres, apellidos, idper, estado } = req.body;
   const user = { usuario, email, password, nombres, apellidos, idper, estado };
 
-  const saltRounds = 10;
-  bcrypt.hash(user.password, saltRounds, (err, hash) => {
+  Usuario.existemail(user.email, (err, results)=>{
+    console.log(user.email);
+    console.log(results);
     if (err) {
-      console.error('Error generando hash:', err);
-    } else {
-      console.log('Hash generado:', hash);
+      return res.status(500).send("Error al validar si existe email");
     }
-    user.idper = 2;
-    user.estado = 1;
-    user.password = hash;
-    console.log(user.password);
-    Usuario.createuser(user, (err, results) => {
-      if (err) {
-        return res.status(500).send("Error al crear el usuario");
-      }
-      const iduser = results.insertId;
-      res.cookie('userid', iduser);
-      res.redirect("/compania/registroCia");
-    });
-  });
+    else if (results.existe>0){
+      //return res.status(500).send("Si existe email");
+      res.render('usuarios/registro', { layout: 'layouts/layoutLog', mensaje: 'Correo email ya existe como cuenta. ¡Registre otra!.' });
+    } 
+    else {
+      const saltRounds = 10;
+      bcrypt.hash(user.password, saltRounds, (err, hash) => {
+        if (err) {
+          console.error('Error generando hash:', err);
+        } else {
+          console.log('Hash generado:', hash);
+        }
+        user.idper = 2;
+        user.estado = 1;
+        user.password = hash;
+        console.log(user.password);
+        Usuario.createuser(user, (err, results) => {
+          if (err) {
+            return res.status(500).send("Error al crear el usuario");
+          }
+          const iduser = results.insertId;
+          res.cookie('userid', iduser);
+          res.redirect("/compania/registroCia");
+        });
+      });
+    }
+  })
 };
-
 
 exports.getAllUser = (req, res) => {
   //console.log('compañia:' + res.locals.idcia);

@@ -13,7 +13,7 @@ exports.createCompaniaForm = (req, res) => {
       }
       //console.log(rubros);
       //console.log(rubrosh);
-      res.render('usuarios/registroCia', { layout: 'layouts/layoutLog', rubros, rubrosh, userid });
+      res.render('usuarios/registroCia', { layout: 'layouts/layoutLog', rubros, rubrosh, userid, mensaje: '' });
     });
 
   });
@@ -33,18 +33,28 @@ exports.createCompaniaReg = (req, res) => {
   compania.diasvig = 30;
   compania.estado = 1;
   //console.log(compania);
-  companias.create(compania, (err, results) => {
+  companias.existeCia(compania.nombre, (err, results) => {
     if (err) {
-      return res.status(500).send("Error al crear compañia");
+      return res.status(500).send("Error al validar si existe nombre CIA");
     }
-    const idcia = results.insertId;
-    console.log(idcia);
-    companias.updateUserCia(idcia, iduser, (err, results) => {
-      if (err) {
-        return res.status(500).send("Error al actulizar al usuario");
-      }
-      res.redirect("/");
-    });
+    else if (results.existe > 0) {
+      //return res.status(500).send("Si existe email");
+      res.render('usuarios/registro', { layout: 'layouts/layoutLog', mensaje: 'Nombre de CIA(empresa) ya existe como cuenta. ¡Registre otra!.' });
+    } else {
+      companias.create(compania, (err, results) => {
+        if (err) {
+          return res.status(500).send("Error al crear compañia");
+        }
+        const idcia = results.insertId;
+        console.log(idcia);
+        companias.updateUserCia(idcia, iduser, (err, results) => {
+          if (err) {
+            return res.status(500).send("Error al actulizar al usuario");
+          }
+          res.redirect("/");
+        });
+      });
+    }
   });
 };
 
@@ -159,13 +169,13 @@ exports.editCompania = (req, res) => {
   console.log(res.locals.idcia);
   const { nombre, documento, telefono, direccion, email, imagen, indimp, mtoimp, idrub, cantusu, tipovig, diasvig, indprd, indser, estado, pagweb, facebook, instagram, linkedid, imagen_u } = req.body;
   let imagenUrl = null;
-  
+
   // Si se ha subido una nueva imagen, almacenamos la URL
   if (req.file) {
     console.log('entra en req.file' + req.file.filename);
     imagenUrl = '/uploads/' + req.file.filename;
   }
-  else{
+  else {
     imagenUrl = imagen_u;
   }
 

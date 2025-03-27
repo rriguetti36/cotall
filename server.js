@@ -100,7 +100,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/registro', (req, res) => {
-  res.render('usuarios/registro', { layout: 'layouts/layoutLog' });  // Renderiza la vista 'login.ejs'
+  res.render('usuarios/registro', { layout: 'layouts/layoutLog', mensaje: '' });  // Renderiza la vista 'login.ejs'
 });
 
 app.get('/registroCia', (req, res) => {

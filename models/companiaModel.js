@@ -58,6 +58,14 @@ class Compania {
     );
   }
 
+  static existeCia(nombrerz, callback) {
+      db.query("SELECT count(*) FROM compania WHERE trim(nombre)=?", [nombrerz], (err, results) => {
+        if (err) {
+          return callback(err);
+        }
+        callback(null, results[0]);
+      });
+    }
   //   static delete(id, callback) {
   //     db.query("DELETE FROM clientes WHERE id = ?", [id], (err, results) => {
   //       if (err) {

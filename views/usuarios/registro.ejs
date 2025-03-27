@@ -10,6 +10,11 @@
                                     <a href="index.html"><img src="images/logo-dark.png" class="dark-login" alt=""></a>
                                     <a href="index.html"><img src="images/logo-white.png" class="light-login" alt=""></a>
                                 </div>
+                                <% if (mensaje) { %>
+                                    <div class="alert alert-danger" role="alert">
+                                      <%= mensaje %>
+                                    </div>
+                                  <% } %>
                                 <h4 class="text-center mb-4">Registra una cuenta</h4>
                                 <form action="/api/auth/registro" method="POST">
                                     <div class="mb-3">
@@ -22,7 +27,7 @@
                                     </div>
                                    <div class="mb-3 position-relative">
                                         <label class="mb-1"><strong>Password</strong></label>
-                                        <input type="password" id="dz-password" class="form-control" value="123456" id="password" name="password">
+                                        <input type="password" id="dz-password" class="form-control" id="password" name="password">
                                         <span class="show-pass eye">
                                         
                                             <i class="fa fa-eye-slash"></i>
