@@ -26,7 +26,7 @@ class Producto {
   }
 
   static getById(id, callback) {
-    db.query("SELECT * FROM Productos WHERE id = ?", [id], (err, results) => {
+    db.query("SELECT * FROM productos WHERE id = ?", [id], (err, results) => {
       if (err) {
         return callback(err);
       }
@@ -36,7 +36,7 @@ class Producto {
 
   static create(producto, callback) {
     console.log(producto);
-    db.query("INSERT INTO Productos SET ?", producto, (err, results) => {
+    db.query("INSERT INTO productos SET ?", producto, (err, results) => {
       if (err) {
         console.log(err);
         return callback(err);
@@ -47,7 +47,7 @@ class Producto {
 
   static update(id, producto, callback) {
     db.query(
-      "UPDATE Productos SET ? WHERE id = ?",
+      "UPDATE productos SET ? WHERE id = ?",
       [producto, id],
       (err, results) => {
         if (err) {
@@ -59,7 +59,7 @@ class Producto {
   }
 
   static delete(id, callback) {
-    db.query("DELETE FROM Productos WHERE id = ?", [id], (err, results) => {
+    db.query("DELETE FROM productos WHERE id = ?", [id], (err, results) => {
       if (err) {
         return callback(err);
       }
