@@ -8,102 +8,263 @@
 <div class="col-xl-12 col-lg-12">
   <div class="card">
     <div class="card-header">
-      <h4 class="card-title">Editar Producto</h4>
+      <h4 class="card-title">Editar Producto o Servicio</h4>
     </div>
     <div class="card-body">
-      <div class="basic-form">
-        <form action="/productos/edit/<%= producto.id %>" method="POST" enctype="multipart/form-data">
+      <ul class="nav nav-pills mb-4 light">
+        <li class=" nav-item">
+          <a href="#productos" class="nav-link active" data-bs-toggle="tab" aria-expanded="false">Producto</a>
+        </li>
+        <li class="nav-item" id="tabVariantes">
+          <a href="#variantes" class="nav-link" data-bs-toggle="tab" aria-expanded="false">Variantes</a>
+        </li>
+      </ul>
+      <div class="tab-content">
+        <div id="productos" class="tab-pane active">
+          <form id="frmProductosedita" enctype="multipart/form-data">
+          <!-- <form id="frmProductos" action="/productos/create" method="POST" enctype="multipart/form-data"> -->
+            <input type="hidden" id="idProducto" value="<%= producto.id %>">
+            
+            <div class="row">
+              <div class="mb-3 col-md-6">
+                <label class="form-label">Tipo Producto o Servicio ofrecido</label>
+                <select name="tipo" id="tipo" class="default-select form-control wide">
+                  <% activos.forEach(activo => { %>
+                    <option value="<%= activo.id %>" 
+                            <%= activo.id === producto.tipo ? 'selected' : '' %> >
+                      <%= activo.nombre %>
+                    </option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="mb-3 col-md-6">
+                <label class="form-label">Titulo</label>
+                <div class="position-relative">
+                  <input type="text" class="form-control" id="nombre" name="nombre" value="<%= producto.nombre %>" required>
+                  <i class="bi bi-question-circle-fill position-absolute top-50 end-0 translate-middle-y me-3 text-primary"
+                    data-bs-toggle="tooltip" title="Escribe el nombre del Producto o Servicio que estás registrando."
+                    style="cursor: pointer; font-size: 1.2em;"></i>
+                </div>
 
-          <div class="row">
-            <div class="mb-3 col-md-6">
-              <label class="form-label">Tipo Producto</label>
-              <select id="tipo" name="tipo" class="default-select form-control wide">
-                <option value="1">Simple</option>
-                <option value="2">Variado</option>
-                <option value="3">Grupo</option>
-                <option value="4">Servicio</option>
-                <option value="5">Virtual</option>
-              </select>
-            </div>
-            <div class="mb-3 col-md-6">
-              <label class="form-label">Titulo</label>
-              <input type="text" class="form-control" id="nombre" name="nombre" value="<%= producto.nombre %>" required>
-            </div>
-            <div class="mb-3 col-md-6">
-              <label class="form-label">Descripcion del producto</label>
-              <textarea class="form-control" rows="9" id="descripcion" name="descripcion" value="<%= producto.descripcion %>"></textarea>
-            </div>
-            <div class="mb-3 col-md-6">
-              <label class="form-label">Codigo SKU</label>
-              <input type="text" class="form-control" id="codigo" name="codigo" value="<%= producto.codigo %>" required>
-            </div>
-          </div>
-          <div class="row">
-            <div class="mb-3 col-md-6">
-              <label class="form-label">Categoria</label>
-              <select name="idcat" id="idcat" class="default-select form-control wide">
-                <% categorias.forEach(categoria => { %>
-                  <option value="<%= categoria.id %>" 
-                          <%= categoria.id === producto.idcat ? 'selected' : '' %> >
-                    <%= categoria.nombre %>
-                  </option>
-                <% }) %>
-              </select>
-            </div>
-            <div class="mb-3 col-md-6">
-              <label class="form-label">Marca</label>
-              <select name="idmar" id="idmar" class="default-select form-control wide">
-                <option value="0">Sin Marca</option>
-                <% marcas.forEach(marca => { %>
-                  <option value="<%= marca.id %>" 
-                          <%= marca.id === producto.idmar ? 'selected' : '' %> >
-                    <%= marca.nombre %>
-                  </option>
-                <% }) %>
-              </select>
-            </div>
-          </div>
-          <div class="row">
-            <div class="mb-3 col-md-6">
-              <label class="form-label">Precio lista</label>
-              <input type="text" class="form-control" id="precio" name="precio" value="<%= producto.precio %>" required>
-            </div>
-            <div class="mb-3 col-md-6">
-              <label class="form-label">Precio oferta</label>
-              <input type="text" class="form-control" id="preciorebaja" name="preciorebaja" value="<%= producto.preciorebaja %>">
-            </div>
-            <div class="mb-3 col-md-6">
-              <label class="form-label">Stock</label>
-              <input type="text" class="form-control" id="stock" name="stock" value="<%= producto.stock %>" required>
-            </div>
-            <div class="mb-3 col-md-6">
-              <label class="form-label">% impuesto IGV</label>
-              <input type="text" class="form-control" id="impuesto" name="impuesto" value="<%= producto.impuesto %>" required>
-            </div>
-          </div>
-          <div class="row">
-            <div class="mb-3 col-md-6">
-              <label class="form-label">Subir imagen</label>
-              <input class="form-control" type="file" id="imagen" name="imagen">
-            </div>
-            <div class="mb-3 col-md-6">
-              <label class="form-label">Imagen del producto</label>
-              <div id="lightgallery" class="row">
-                <a href="<%= producto.imagen %>" data-exthumbimage="<%= producto.imagen %>" data-src="<%= producto.imagen %>" class="col-lg-3 col-md-6 mb-4">
-                  <img src="<%= producto.imagen %>" class="rounded" alt="" style="width:100%;">
-                </a>
+              </div>
+              <div class="mb-3 col-md-6">
+                <label class="form-label">Descripcion del producto o Servicio</label>
+                <div class="position-relative">
+                  <textarea class="form-control" rows="9" id="descripcion" name="descripcion"><%= producto.descripcion %></textarea>
+                  <i class="bi bi-question-circle-fill position-absolute top-50 end-0 translate-middle-y me-3 text-primary"
+                    data-bs-toggle="tooltip"
+                    title="Escribe una descripción corta del Producto Servicio. Detalles, Características, funciones o lo que describa los que se ofrece."
+                    style="cursor: pointer; font-size: 1.2em;"></i>
+                </div>
+
+              </div>
+              <div class="mb-3 col-md-6">
+                <label class="form-label">Codigo SKU</label>
+                <div class="position-relative">
+                  <input type="text" class="form-control" id="codigo" name="codigo" value="<%= producto.codigo %>" required>
+                  <i class="bi bi-question-circle-fill position-absolute top-50 end-0 translate-middle-y me-3 text-primary"
+                    data-bs-toggle="tooltip" title="Digita el código interno del tu producto, si lo tuvieras.."
+                    style="cursor: pointer; font-size: 1.2em;"></i>
+                </div>
+
               </div>
             </div>
-          </div>
+            <div class="row">
+              <div class="mb-3 col-md-6">
+                <label class="form-label">Categoria</label>
+                <select name="idcat" id="idcat" class="default-select form-control wide">
+                  <option value="0">Sin Marca</option>
+                  <% categorias.forEach(categoria => { %>
+                    <option value="<%= categoria.id %>" 
+                            <%= categoria.id === producto.idcat ? 'selected' : '' %> >
+                      <%= categoria.nombre %>
+                    </option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="mb-3 col-md-6">
+                <label class="form-label">Marca</label>
+                <select name="idmar" id="idmar" class="default-select form-control wide">
+                  <option value="0">Sin Marca</option>
+                  <% marcas.forEach(marca => { %>
+                    <option value="<%= marca.id %>" 
+                            <%= marca.id === producto.idmar ? 'selected' : '' %> >
+                      <%= marca.nombre %>
+                    </option>
+                  <% }) %>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div id="divprecio" class="mb-3 col-md-6">
+                <label class="form-label">Precio lista</label>
+                <input type="number" class="form-control" id="precio" name="precio" value="<%= producto.precio %>" required>
+              </div>
+              <div id="divpreciorebaja" class="mb-3 col-md-6">
+                <label class="form-label">Precio oferta</label>
+                <input type="number" class="form-control" id="preciorebaja" name="preciorebaja" value="<%= producto.preciorebaja %>">
+              </div>
+              <div id="divstock" class="mb-3 col-md-6">
+                <label class="form-label">Stock</label>
+                <div class="position-relative">
+                  <input type="number" class="form-control" id="stock" name="stock" value="<%= producto.stock %>">
+                  <i class="bi bi-question-circle-fill position-absolute top-50 end-0 translate-middle-y me-3 text-primary"
+                    data-bs-toggle="tooltip" title="Digita cantidad de unidades que tienes en stock"
+                    style="cursor: pointer; font-size: 1.2em;"></i>
+                </div>
+              </div>
+              <div class="mb-3 col-md-6">
+                <label class="form-label">% impuesto IGV</label>
+                <div class="position-relative">
+                  <input type="number" class="form-control" id="impuesto" name="impuesto" value="<%= producto.impuesto %>">
+                  <i class="bi bi-question-circle-fill position-absolute top-50 end-0 translate-middle-y me-3 text-primary"
+                    data-bs-toggle="tooltip"
+                    title="IGV al producto. Es editable si no desea modificar este tomará el IGV configurado en la CIA."
+                    style="cursor: pointer; font-size: 1.2em;"></i>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="mb-3 col-md-6">
+                <label class="form-label">Subir imagen</label>
+                <input class="form-control" type="file" id="imagen" name="imagen">
+              </div>
+              <div class="mb-3 col-md-6">
+                <label class="form-label">Imagen del producto</label>
+                <div id="lightgallery" class="row">
+                  <a href="<%= producto.imagen %>" data-exthumbimage="<%= producto.imagen %>" data-src="<%= producto.imagen %>" class="col-lg-3 col-md-6 mb-4">
+                    <img src="<%= producto.imagen %>" class="rounded" alt="" style="width:100%;">
+                  </a>
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Actualizar Producto</button>
+          </form>
+        </div>
+        <div id="variantes" class="tab-pane">
+          <div class="row">
+            <div class="mb-3 col-md-12">
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="card-title">Variantes del producto</h5>
+                  <button id="mostrarTarjeta" class="btn btn-primary">Agregar</button>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table id="example3" class="display" style="min-width: 845px; table-layout: fixed;">
+                      <thead>
+                        <tr>
+                          <th>Atributos</th>
+                          <th>Precio</th>
+                          <th>Prefio Oferta</th>
+                          <th>Stock</th>
+                          <th>Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% variantes.forEach(variante=> { %>
+                          <tr>
+                            <td>
+                              <%= variante.atributos %>
+                            </td>
+                            <td>
+                              <%= variante.precio %>
+                            </td>
+                            <td>
+                              <%= variante.preciorebaja %>
+                            </td>
+                            <td>
+                              <%= variante.stock %>
+                            </td>
+                            <td>
+                              <div class="d-flex">
+                                <a href="#" data-id="<%= variante.id %>" class="btn-ver btn btn-primary shadow btn-xs sharp me-1"><i class="fa fa-pencil-alt"></i></a>
+                                <a href="/productos/delete/<%= variante.id %>" class="btn btn-danger shadow btn-xs sharp"><i class="fa fa-trash"></i></a>
+                              </div>
+                            </td>
+                          </tr>
+                          <% }) %>
+    
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <!-- <a href="/products/<%= variantes[0]?.idprod %>/add-variant" class="btn btn-primary">Agregar Variante</a> -->
+              
 
-          <button type="submit" class="btn btn-primary">Actualizar Producto</button>
-        </form>
+            </div>
+            <div id="panelVariantes" class="slide-panel">
+              <!-- Tu tarjeta completa acá -->
+              <div class="mb-3 col-md-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h5 class="card-title">Agregar Variantes</h5>
+                    <button id="cerrarPanel" class="btn btn-sm btn-danger float-end">×</button>
+                  </div>
+                  <div class="card-body">
+                    <form id="frmVariantes">
+                      <div class="row">
+                        <div id="contenedor-actualiza" class="mb-3 col-md-6"></div>
+                        <div id="contenedor-guarda" class="mb-3 col-md-6">
+                          <label class="form-label">Seleccione el atributo</label><br>
+                          <% atributos.forEach(attr => { %>
+                            <label><%= attr.nombre %></label>
+                            <select id="<%= attr.nombre %>" class="single-select-placeholder" name="attributeValues" required>
+                              <% attr.values.forEach(val => { %>
+                                <option value="<%= val.id %>"><%= val.valor %></option>
+                              <% }) %>
+                            </select><br>
+                          <% }) %>
+                        </div>
+          
+                        <div class="mb-3 col-md-6">
+                          <label class="form-label">Datos del Producto Variante</label>
+                          <br>
+                          <input type="hidden" id="idvariante">
+                          <div class="mb-3 col-md-12">
+                            <label class="form-label">Codigo SKU</label>
+                            <input type="text" class="form-control" id="codigovar" name="codigo">
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label">Precio</label>
+                            <input type="number" step="0.01" class="select-text form-control" id="preciovar" name="precio" value="0.00" required>
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label">Precio oferta</label>
+                            <input type="number" step="0.01" class="select-text form-control" id="preciorebajavar" name="preciorebaja" value="0.00" required>
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label">Stock</label>
+                            <input type="number" step="0.01" class="select-text form-control" id="stockvar" name="stock" value="0" required>
+                          </div>
+                          <button type="submit" class="btn btn-primary">Agregar Variante</button>
+                          
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+<!-- sweetalert -->
+<script src="/theme/vendor/sweetalert2/dist/sweetalert2.min.js"></script>
+<script src="/theme/js/plugins-init/sweetalert.init.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/public/js/producto.js"></script>
 
-
-
-
+<!-- <script>
+  document.getElementById('mostrarTarjeta').addEventListener('click', function () {
+    document.getElementById('panelVariantes').classList.add('show');
+  });
+</script> -->

@@ -115,3 +115,52 @@ a:hover {
 .closebtn:hover {
     background-color: #ccc;
 }
+
+/* Estilos de la tarjeta */
+.tarjeta {
+  display: none;
+  position: fixed;
+  top: 50%;
+  right: -400px;
+  transform: translateY(-50%);
+  width: 300px;
+  padding: 20px;
+  background-color: #f5f5f5;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  transition: right 0.5s ease;
+  z-index: 1000;
+}
+
+/* Estilos para el formulario dentro de la tarjeta */
+.tarjeta .tarjeta-contenido {
+  display: flex;
+  flex-direction: column;
+}
+
+.tarjeta .tarjeta-contenido input,
+.tarjeta .tarjeta-contenido textarea {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.tarjeta .tarjeta-contenido button {
+  background-color: #1362FC;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.tarjeta .tarjeta-contenido button:hover {
+  background-color: #0f4fcf;
+}
+
+/* Estado de la tarjeta cuando está activa */
+.tarjeta.active {
+  right: 20px; /* Se mueve hacia la derecha */
+}
+

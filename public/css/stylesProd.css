@@ -1,0 +1,17 @@
+.slide-panel {
+  position: fixed;
+  top: 0;
+  right: -100%; /* empieza oculto fuera de la pantalla */
+  width: 50%;
+  height: 100%;
+  background-color: white;
+  z-index: 1050;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
+  overflow-y: auto;
+  transition: right 0.5s ease;
+  padding: 20px;
+}
+
+.slide-panel.show {
+  right: 0; /* lo trae hacia adentro */
+}

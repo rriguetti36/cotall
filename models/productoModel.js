@@ -1,4 +1,4 @@
-// /models/clienteModel.js
+
 const db = require('../config/db');  // Si tienes un archivo de configuración para la DB
 
 class Producto {

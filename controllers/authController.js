@@ -39,8 +39,9 @@ const login = (req, res) => {
       if (!isMatch) {
         //return res.status(401).json({ message: 'Contraseña incorrecta' });
         // Redirigir a la página de login con el mensaje de error
-        console.log(isMatch);
-         return res.render('login', { layout: 'layouts/layoutLog', errorMessage: 'Contraseña incorrecta' });
+        console.log("no esta entrando al index" + isMatch);
+         //return res.render('login', { layout: 'layouts/layoutLog', errorMessage: 'Contraseña incorrecta' });
+         return res.json({ success: true, message: 'Contraseña incorrecta.' });
       }
 
       //req.session.idcia = { idcia: user.idcia }; // Guardar en sesión
