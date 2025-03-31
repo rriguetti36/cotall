@@ -76,7 +76,7 @@ const login = (req, res) => {
        // Redirigir a la página de dashboard después de login exitoso
 
        //res.cookie('auth_token', token, { httpOnly: true, secure: false });  // Guardamos el token en una cookie
-       return res.redirect('/index');  // Redirige al dashboard
+       //return res.redirect('/index');  // Redirige al dashboard
     });
   });
 };
