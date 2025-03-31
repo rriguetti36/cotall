@@ -167,7 +167,7 @@ exports.editCompania = (req, res) => {
   console.log("entra en editCompania");
   console.log(req.body);
   console.log(res.locals.idcia);
-  const { nombre, documento, telefono, direccion, email, imagen, indimp, mtoimp, idrub, cantusu, tipovig, diasvig, indprd, indser, estado, pagweb, facebook, instagram, linkedid, imagen_u } = req.body;
+  const { nombre, documento, telefono, direccion, email, imagen, indimp, mtoimp, idrub, cantusu, tipovig, diasvig, indprd, indser, estado, pagweb, facebook, instagram, linkedid, ctabco, imagen_u } = req.body;
   let imagenUrl = null;
 
   // Si se ha subido una nueva imagen, almacenamos la URL
@@ -179,7 +179,7 @@ exports.editCompania = (req, res) => {
     imagenUrl = imagen_u;
   }
 
-  const compania = { nombre, documento, telefono, direccion, email, imagen, indimp, mtoimp, idrub, cantusu, tipovig, diasvig, indprd, indser, estado, pagweb, facebook, instagram, linkedid };
+  const compania = { nombre, documento, telefono, direccion, email, imagen, indimp, mtoimp, idrub, cantusu, tipovig, diasvig, indprd, indser, estado, pagweb, facebook, instagram, linkedid, ctabco };
 
   compania.indprd = req.body.indprd ? "1" : "0";
   compania.indser = req.body.indser ? "1" : "0";

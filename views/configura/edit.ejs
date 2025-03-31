@@ -67,12 +67,12 @@
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label">Direccion CIA</label>
-                            <input type="text" class="form-control" id="direccion" name="direccion"
-                                value="<%= compania.direccion %>" required>
+                            <textarea class="form-control" rows="4" id="direccion"
+                                name="direccion"><%= compania.direccion %></textarea>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label">Correo</label>
-                            <input type="email" class="form-control" id="email" name="email" required
+                            <input type="email" class="form-control" id="email" name="email"
                                 value="<%= compania.email %>" required>
                         </div>
                     </div>
@@ -158,6 +158,11 @@
                                     <img src="<%= compania.imagen %>" class="rounded" alt="" style="width:100%;">
                                 </a>
                             </div>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label class="form-label">Cuentas y Bancos</label>
+                            <textarea class="form-control" rows="5" id="ctabco"
+                                name="ctabco"><%= compania.ctabco %></textarea>
                         </div>
 
                     </div>
