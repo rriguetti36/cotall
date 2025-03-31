@@ -69,6 +69,27 @@
               // Lanza un error para ser capturado abajo
               //return response.json().then(err => { throw err });
               // Si la respuesta es exitosa, redirigir al usuario
+              // Almacenar la cookie
+              document.cookie = `userEmail=${email}; expires=Thu, 31 Dec 2025 12:00:00 UTC; path=/`;
+
+              // Recuperar la cookie
+              const cookies = document.cookie.split(';');
+              cookies.forEach(cookie => {
+                const [key, value] = cookie.trim().split('=');
+                if (key === "userEmail") {
+                  console.log("Correo almacenado en cookie:", value);
+                }
+              });
+
+              // Al cargar la página, verificar si el usuario tiene su correo almacenado
+              document.addEventListener("DOMContentLoaded", function () {
+                const storedEmail = localStorage.getItem("userEmail");
+                if (storedEmail) {
+                  document.getElementById("email").value = storedEmail;  // Prellenar el correo
+                  document.getElementById("rememberMe").checked = true;  // Marcar la opción de "Recordarme"
+                }
+              });
+
               window.location.href = '/index'; // Redirigir a la página principal
             } else {
               // Mostrar mensaje en pantalla
@@ -80,33 +101,14 @@
             }
             return response.json();
           });
-          
+
 
 
         // Redirigiendo a la página principal
         //window.location.href = "/index"; // Redirige a la página principal
       });
 
-      // Almacenar la cookie
-      document.cookie = `userEmail=${email}; expires=Thu, 31 Dec 2025 12:00:00 UTC; path=/`;
 
-      // Recuperar la cookie
-      const cookies = document.cookie.split(';');
-      cookies.forEach(cookie => {
-        const [key, value] = cookie.trim().split('=');
-        if (key === "userEmail") {
-          console.log("Correo almacenado en cookie:", value);
-        }
-      });
-
-      // Al cargar la página, verificar si el usuario tiene su correo almacenado
-      document.addEventListener("DOMContentLoaded", function () {
-        const storedEmail = localStorage.getItem("userEmail");
-        if (storedEmail) {
-          document.getElementById("email").value = storedEmail;  // Prellenar el correo
-          document.getElementById("rememberMe").checked = true;  // Marcar la opción de "Recordarme"
-        }
-      });
 
     </script>
     <!-- select 2 -->

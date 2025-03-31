@@ -110,11 +110,11 @@ app.get('/registroCia', (req, res) => {
 app.get('/index', (req, res) => {
 
   const token = req.cookies.auth_token;
-
+  console.log(token);
   if (!token) {
     return res.redirect('/');  // Redirige al login si no hay token
   }
-  console.log(token);
+  
   try {
     // Decodificar el token usando la misma clave secreta
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
