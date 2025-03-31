@@ -51,7 +51,7 @@
         } else {
           localStorage.removeItem("userEmail");
         }
-
+        //alert('entra al submit');
         // Aquí podrías proceder con la autenticación del usuario
         console.log("Correo:", email);
         console.log("Contraseña:", password);
@@ -66,16 +66,21 @@
         })
           .then(response => {
             if (response.ok) {
+              // Lanza un error para ser capturado abajo
+              //return response.json().then(err => { throw err });
               // Si la respuesta es exitosa, redirigir al usuario
               window.location.href = '/index'; // Redirigir a la página principal
             } else {
-              alert('Credenciales incorrectas');
+              // Mostrar mensaje en pantalla
+              //alert("contraseña incorrecta");
+              //const mensaje = error.message || 'Ocurrió un error inesperado';
+              const contenedor = document.getElementById('mensajeError');
+              contenedor.innerText = 'Error: Email o Password incorrecto.';
+              contenedor.style.display = 'block';
             }
-          })
-          .catch(error => {
-            console.error('Error al iniciar sesión:', error);
-            alert('Hubo un error. Inténtalo nuevamente.');
+            return response.json();
           });
+          
 
 
         // Redirigiendo a la página principal
