@@ -9,8 +9,9 @@ exports.createUsuario = (req, res) => {
 
   Usuario.existemail(user.email, (err, results)=>{
     console.log(user.email);
-    console.log(results);
+    
     if (err) {
+      console.error(err);
       return res.status(500).send("Error al validar si existe email");
     }
     else if (results.existe>0){
