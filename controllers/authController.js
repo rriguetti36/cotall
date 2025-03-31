@@ -19,8 +19,10 @@ const login = (req, res) => {
       console.log(err);
       return res.status(500).json({ message: 'Error en la consulta a la base de datos' });
     }
+    console.log("results" + results);
     //console.log(results);
     if (results.length === 0) {
+      console.log('Usuario no encontrado');
       //return res.status(404).json({ message: 'Usuario no encontrado' });
       return res.render('login', { layout: 'layouts/layoutLog', errorMessage: 'Usuario no encontrado' });
     }
@@ -68,7 +70,7 @@ const login = (req, res) => {
       );
 
       res.cookie('auth_token', authToken, {
-               httpOnly: true,
+               httpOnly: false,
                secure: process.env.NODE_ENV === 'production',  // Solo en producción usar HTTPS
                maxAge: 3600000  // 1 hora
              });
@@ -76,7 +78,7 @@ const login = (req, res) => {
        // Redirigir a la página de dashboard después de login exitoso
 
        //res.cookie('auth_token', token, { httpOnly: true, secure: false });  // Guardamos el token en una cookie
-       //return res.redirect('/index');  // Redirige al dashboard
+       return res.redirect('/index');  // Redirige al dashboard
     });
   });
 };

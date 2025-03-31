@@ -110,7 +110,7 @@ app.get('/registroCia', (req, res) => {
 app.get('/index', (req, res) => {
 
   const token = req.cookies.auth_token;
-  console.log(token);
+  console.log("token:" + token);
   if (!token) {
     return res.redirect('/');  // Redirige al login si no hay token
   }
