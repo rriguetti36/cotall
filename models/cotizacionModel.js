@@ -30,7 +30,9 @@ class Cotizacion {
     }
 
     static buscaAllProd(id,callback) {
-        db.query("select id, nombre from productos where idcia=?", [id], (err, results) => {
+        db.query(`select ifnull(b.id, a.id) id, ifnull(b.titulo, a.nombre) nombre from productos a
+                  left join productovariantes b on a.id=b.idprod
+                  where idcia=?`, [id], (err, results) => {
           if (err) {
             return callback(err);
           }
@@ -38,9 +40,32 @@ class Cotizacion {
         });
     }
 
-    static obtieneProdId(id, callback) {
-        //console.log(id);
-        db.query("SELECT * FROM Productos WHERE id = ?", [id], (err, results) => {
+    static obtieneProdTipo(id, callback) {
+      console.log("obtiene producto para obtener el tipo de prod: " + id);
+      db.query(`select case when count(a.id)>0 then 2 else 1 end tipo from productos a 
+                left join productovariantes b on a.id=b.idprod
+                where b.id=?`, [id], (err, results) => {
+        if (err) {
+          return callback(err);
+        }
+        callback(null, results[0]);
+      });
+    } 
+
+    static obtieneProdId(tipo, id, callback) {
+        console.log("obtiene producto para traer valores para cotizacion: " + id);
+
+        if(tipo==2){
+          console.log("tipo variable");
+          var query = "select id,titulo, precio, preciorebaja,stock, 2 tipo from productovariantes where id=?";
+        }
+        else
+        {
+          console.log("tipo simplre");
+          var query = "select id,nombre, precio, preciorebaja,stock, tipo from productos where id=?";
+        }
+
+        db.query(query, [id], (err, results) => {
           if (err) {
             return callback(err);
           }
@@ -136,7 +161,8 @@ class Cotizacion {
                   concat(g.nombres, ' ', b.apellido) agente_nombre,
                   g.email agente_email,
                   c.nombre moneda,
-                  g.telefono agente_telefono
+                  g.telefono agente_telefono,
+                  f.ctabco
                   FROM cotizacion_cab a 
                   JOIN clientes b ON a.idcli = b.id 
                   JOIN monedas c ON a.idmon = c.id 
@@ -156,14 +182,23 @@ class Cotizacion {
 
     static obtieneCotIdPDFDetalle(id, callback){
       //console.log(id);
-      var query = `select b.codigo, b.nombre, b.descripcion, c.corto, 
+      var query = `select * from (
+				  select a.id, b.codigo, b.nombre, a.observacion descripcion, c.corto, 
                   a.cantidad, a.preciounit, a.subtotal 
                   from cotizacion_det a 
                   JOIN productos b on a.idprod=b.id 
                   JOIN umedidas c on a.idumd=c.id 
-                  where a.idcot = ?`
+                  where a.idcot = ? and a.tipo<>2
+                  union 
+                  select a.id, b.codigo, b.titulo, a.observacion descripcion, c.corto, 
+                  a.cantidad, a.preciounit, a.subtotal 
+                  from cotizacion_det a 
+                  JOIN productovariantes b on a.idprod=b.id 
+                  JOIN umedidas c on a.idumd=c.id 
+                  where a.idcot = ? and a.tipo=2
+                  ) a order by a.id` 
 
-      db.query(query, [id], (err, results) => {
+      db.query(query, [id, id], (err, results) => {
         if (err) {
           return callback(err);
         }

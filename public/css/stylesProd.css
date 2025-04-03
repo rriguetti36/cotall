@@ -15,3 +15,11 @@
 .slide-panel.show {
   right: 0; /* lo trae hacia adentro */
 }
+
+input:disabled {
+  background-color: #e9ecef !important; /* Gris claro */
+  color: #6c757d !important; /* Gris oscuro */
+  opacity: 0.7; /* Reducir opacidad */
+  cursor: not-allowed;
+}
+

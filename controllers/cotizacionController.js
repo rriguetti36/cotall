@@ -104,13 +104,15 @@ exports.crearCotizacion = (req, res) => {
         productos.forEach(producto => {
           const detalleCotizacion = {
             idcot: idCotizacion,
+            tipo: producto.tipo,
             idprod: producto.idprod,
             cantidad: producto.cantidad,
             idumd: producto.idumd,
             preciounit: producto.preciounit,
             subtotal: producto.subtotal,
             impuesto: 0,
-            total: 0
+            total: 0,
+            observacion: producto.observacion,
           };
           // Crear el detalle de la cotización
           CotizacionDet.crearDetalleCotizacion(detalleCotizacion, (err, result) => {
@@ -134,17 +136,26 @@ exports.crearCotizacion = (req, res) => {
 exports.obtieneProductoID = (req, res) => {
   const { id } = req.params;
 
-  Cotizacion.obtieneProdId(id, (err, producto) => {
-    //console.log(Object.keys(producto).length);
+  Cotizacion.obtieneProdTipo(id, (err, tipoProd) => {
     if (err) {
       return res.status(500).send("Error al obtener producto");
     }
-    else {
-      if (Object.keys(producto).length > 0) {
-        res.json(producto);  // Devuelve el primer resultado como JSON
-      } else {
-        res.status(404).json({ error: 'Producto no encontrado' });
-      }
+    else{
+      const tipo  = (tipoProd && tipoProd.tipo) || 1;
+      console.log(tipo);
+      Cotizacion.obtieneProdId(tipo,id, (err, producto) => {
+        //console.log(Object.keys(producto).length);
+        if (err) {
+          return res.status(500).send("Error al obtener producto");
+        }
+        else {
+          if (Object.keys(producto).length > 0) {
+            res.json(producto);  // Devuelve el primer resultado como JSON
+          } else {
+            res.status(404).json({ error: 'Producto no encontrado' });
+          }
+        }
+      });
     }
   });
 }

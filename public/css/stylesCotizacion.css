@@ -149,4 +149,52 @@
     background-color: #0056b3;
   }
   
+  table {
+    height: auto !important; /* Permite que la tabla crezca */
+}
   
+.modal {
+  z-index: 1050;
+}
+select {
+  z-index: 1051; /* Más alto que el modal */
+}
+
+.select2-container {
+  z-index: 1055 !important; /* Más alto que el modal */
+}
+
+.select2-container--open {
+  z-index: 1060 !important; /* Asegura que el desplegable esté arriba */
+}
+
+#smartwizard {
+  overflow: auto !important;
+}
+
+.card {
+  overflow: visible !important; 
+}
+
+
+.card-body {
+  max-height: 300px; /* Limita la altura */
+  overflow-y: auto;  /* Activa el scroll */
+}
+
+.table-responsive {
+  max-height: 600px;
+  overflow-y: auto;
+  display: block; /* Permite que la tabla tenga scroll */
+}
+
+.sw-container {
+  min-height: 800px !important;
+  height: auto !important;
+}
+
+.tab-content {
+  min-height: 800px !important;
+  height: auto !important;
+  overflow-y: auto; /* Agrega scroll si es necesario */
+}

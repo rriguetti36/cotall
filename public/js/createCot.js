@@ -1,8 +1,20 @@
 $(document).ready(function () {
-    
+
+    $('#miModal').on('shown.bs.modal', function () {
+        $('#single-select_p').select2({
+            dropdownParent: $('#miModal')
+        });
+    });
+
+    $('.select-text').on('click', function () {
+        $(this).select();  // Selecciona todo el contenido del input
+    });
+
+    // $("#smartwizard").css("height", "800px");
+
     let cotizaciodet = [];
     // let productos = [];
-    
+
     $("#single-select_p").change(function () {
         var productoId = $(this).val();
         if (productoId) {
@@ -13,6 +25,8 @@ $(document).ready(function () {
                     // Si los datos del producto fueron recibidos correctamente
                     if (data) {
                         // Pintamos los datos del producto en los inputs
+
+                        document.getElementById('tipoprod').value = Math.round(data.tipo);
                         document.getElementById('preciounit').value = Math.round(data.precio);
                         document.getElementById('preciocot').value = Math.round(data.precio);
 
@@ -56,16 +70,20 @@ $(document).ready(function () {
         const umedida = $('#umedida option:selected').text();
         const precio = parseFloat($('#preciocot').val());
         const importe = parseFloat($('#subtotal').val());
+        const observacion = $('#observacion').val();
+        const tipo = $('#tipoprod').val();
 
-        if (cantidad && precio && importe){
+        if (cantidad && precio && importe) {
 
             // Crear un objeto producto
             const producto = {
-                idprod : idproducto,
-                cantidad : cantidad,
-                idumd : idumd,
-                preciounit : precio,
-                subtotal : importe
+                tipo: tipo,
+                idprod: idproducto,
+                cantidad: cantidad,
+                idumd: idumd,
+                preciounit: precio,
+                subtotal: importe,
+                observacion: observacion
             }
             // Agregar al arreglo de productos
             cotizaciodet.push(producto);
@@ -74,18 +92,22 @@ $(document).ready(function () {
             const nuevaFila = $('<tr></tr>');
 
             // Insertar celdas en la nueva fila
-            nuevaFila.append('<td>' + descripcion + '</td>');
+            nuevaFila.append('<td>' + descripcion + ' ' + observacion + '</td>');
             nuevaFila.append('<td>' + cantidad + '</td>');
             nuevaFila.append('<td>' + umedida + '</td>');
             nuevaFila.append('<td>' + precio + '</td>');
             nuevaFila.append('<td class="importe">' + importe + '</td>');
             nuevaFila.append('<td><div class="d-flex"><a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i class="fa fa-pencil"></i></a><a href="#" class="eliminarFila btn btn-danger shadow btn-xs sharp"><i class="fa fa-trash"></i></a></div></td>');
-        
+
             // Agregar la nueva fila a la tabla
             $('#tabla-productos tbody').append(nuevaFila);
-
+            // Llamar a la función después de agregar filas a la tabla
+            $('#smartwizard').smartWizard("fixHeight");
             actualizarTotal();
-
+            actualizarAlturaWizard();
+            // actualizarAlturaWizard();
+            actualizarScroll();
+            
             // Limpiar los campos de entrada
             $('#single-select_p').val('0');
             $('#cantidad').val('0');
@@ -94,7 +116,7 @@ $(document).ready(function () {
             $('#preciocot').val('0.00');
             $('#subtotal').val('0.00');
 
-            $(".eliminarFila").last().click(function() {
+            $(".eliminarFila").last().click(function () {
                 // Eliminar del arreglo y de la tabla
                 const fila = $(this).closest("tr");
                 const productoEliminado = {
@@ -106,13 +128,13 @@ $(document).ready(function () {
                 fila.remove();
                 actualizarTotal();  // Actualizar el total después de eliminar un producto
             });
-        }  
-        else{
+        }
+        else {
             alert("Por favor, completa todos los campos.");
         }
     });
 
-    $("#btnEnviarCot").click(function() {
+    $("#btnEnviarCot").click(function () {
         event.preventDefault(); // Previene la recarga de la página
         Swal.fire({
             title: "¿Estás seguro?",
@@ -185,7 +207,7 @@ function enviaCotizacion(cotizaciodet) {
     const _totcot = $("#totcot").val();  // Obtener el nombre del cliente desde el formulario
     const _idcia = $("#idcia").val();
 
-    
+
     //const total = parseFloat($("#totalCotizacion").text());  // Obtener el total calculado de la cotización
 
     // Verificar si el nombre del cliente está ingresado
@@ -220,23 +242,38 @@ function enviaCotizacion(cotizaciodet) {
             cotizacion: cotizacion,
             cotizaciodet: cotizaciodet
         }),
-        success: function(response) {
-                Swal.fire(
-                         "Actualizado!",
-                         "El registro ha sido guardado.",
-                         "success"
-                    );
-                    window.location.href = '/cotizaciones';
+        success: function (response) {
+            Swal.fire(
+                "Actualizado!",
+                "El registro ha sido guardado.",
+                "success"
+            );
+            window.location.href = '/cotizaciones';
             // Mostrar respuesta del servidor
             //alert(response);
             //alert("Cotización enviada con éxito. ");
 
         },
-        error: function(error) {
-            
+        error: function (error) {
+
             console.error("Error al enviar la cotización:", error);
             alert("Hubo un error al enviar la cotización.");
         }
     });
 }
+
+function actualizarScroll() {
+    let cardBody = $(".card-body");
+    cardBody.scrollTop(cardBody.prop("scrollHeight")); // Baja el scroll al final
+}
+
+function actualizarAlturaWizard() {
+    let alturaContenido = $(".tab-content").prop("scrollHeight"); 
+    $(".tab-content").css("height", alturaContenido + "px");
+}
+/* function actualizarAlturaWizard() {
+    let wizard = $("#smartwizard");
+    let alturaContenido = wizard.prop("scrollHeight"); 
+    wizard.css("height", alturaContenido + "px");
+} */
 

@@ -41,7 +41,8 @@
                                                 disabled><br>
                                         </div>
                                         <div class="mb-3 col-md-6">
-                                            <label class="text-label form-label">Elige Cliente<span class="required">*</span></label>
+                                            <label class="text-label form-label">Elige Cliente<span
+                                                    class="required">*</span></label>
                                             <select id="single-select" name="idcli">
                                                 <% clientes.forEach(cliente=> { %>
                                                     <option value="<%= cliente.id %>">
@@ -51,7 +52,8 @@
                                             </select>
                                         </div>
                                         <div class="mb-3 col-md-6">
-                                            <label class="text-label form-label">Moneda<span class="required">*</span></label>
+                                            <label class="text-label form-label">Moneda<span
+                                                    class="required">*</span></label>
                                             <select id="idmon" name="idmon" class="default-select form-control wide">
                                                 <% monedas.forEach(moneda=> { %>
                                                     <option value="<%= moneda.id %>">
@@ -62,7 +64,8 @@
                                         </div>
                                         <div class="mb-3 col-md-6">
                                             <label class="form-label">Vendedor</label>
-                                            <input type="text" class="form-control" id="iduser" name="iduser" value="<%= asesor.comercial; %>">
+                                            <input type="text" class="form-control" id="iduser" name="iduser"
+                                                value="<%= asesor.comercial; %>">
                                         </div>
                                     </div>
                                 </div>
@@ -76,74 +79,27 @@
                                         </div>
                                     </div>
                                 </div> -->
-                                <div class="row">
-                                    <div class="col-lg-5 mb-2">
-                                        <label class="text-label form-label">Descripción</label>
-                                        <select id="single-select_p">
-                                            <option value="0">Elige un Producto</option>
-                                            <% productos.forEach(producto=> { %>
-                                                <option value="<%= producto.id %>">
-                                                    <%= producto.nombre %>
-                                                </option>
-                                                <% }); %>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3 col-md-1">
-                                        <div class="mb-3">
-                                            <label class="text-label form-label">Precio</label>
-                                            <input type="text" class="form-control" id="preciounit">
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 col-md-1">
-                                        <div class="mb-3">
-                                            <label class="text-label form-label">Variación</label>
-                                            <input type="text" class="form-control" id="preciocot">
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="mb-3 col-md-2">
-                                        <label class="text-label form-label">U.Medida</label>
-                                        <select id="umedida" class="default-select form-control wide">
-                                            <% medidas.forEach(medida=> { %>
-                                                <option value="<%= medida.id %>">
-                                                    <%= medida.nombre %>
-                                                </option>
-                                                <% }); %>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3 col-md-1">
-                                        <div class="mb-3">
-                                            <label class="text-label form-label">Cantidad</label>
-                                            <input type="text" class="form-control" id="cantidad" value="0" required>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 col-md-1">
-                                        <div class="mb-3">
-                                            <label class="text-label form-label">Importe</label>
-                                            <input type="text" class="form-control" id="subtotal" value="0.00"
-                                                required>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 col-md-1">
-                                        <div class="mb-3">
-                                            <label class="text-label form-label">Agregar</label>
-                                            <a href="#" id="agregarProducto" class="btn btn-primary">+</a>
-                                        </div>
-                                    </div>
-                                </div>
 
                                 <div class="row">
+                                    <div class="col-xl-12 d-flex justify-content-end" >
+                                        <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal"
+                                        data-bs-target=".bd-example-modal-lg">Agregar</button>
+                                    </div>
+                                    
+                                </div>
+                                
+                                <div class="row">
+
                                     <div class="col-xl-12">
                                         <div class="card">
                                             <!-- <div class="card-header border-0 pb-0">
                                                 <h5 class="card-title">Productos</h5>
                                             </div> -->
-                                            <div class="card-body" style="max-height:300px; overflow-y: auto;">
+                                            <div class="card-body">
                                                 <div class="table-responsive">
                                                     <table id="tabla-productos" class="table table-responsive-md">
                                                         <thead>
                                                             <tr>
-
                                                                 <th>Producto/Descripción</th>
                                                                 <th>Cantidad</th>
                                                                 <th>Um</th>
@@ -158,39 +114,39 @@
                                                     </table>
                                                 </div>
                                             </div>
-                                            <div class="card-footer border-0 pt-0">
+                                            <!-- <div class="card-footer border-0 pt-0">
                                                 <p class="card-link float-end">Importe Total</p>
-                                            </div>
+                                            </div> -->
                                         </div>
                                         <br>
                                         <br>
                                     </div>
 
                                 </div>
-
-                            </div>
-                            <div id="Pago" class="tab-pane" role="tabpanel">
                                 <div class="row">
                                     <div class="mb-3 col-md-2">
                                         <div class="mb-3">
                                             <label class="text-label form-label">Sub total</label>
-                                            <input type="text" class="form-control" id="subtotcot" name="subtotcot">
+                                            <input type="text" class="form-control select-text" id="subtotcot" name="subtotcot" disabled>
                                         </div>
                                     </div>
                                     <div class="mb-3 col-md-2">
                                         <div class="mb-3">
                                             <label class="text-label form-label">Impuesto IGV</span></label>
-                                            <input type="text" class="form-control" id="igvcot" name="igvcot">
+                                            <input type="text" class="form-control select-text" id="igvcot" name="igvcot" disabled>
                                         </div>
                                     </div>
                                     <div class="mb-3 col-md-2">
                                         <div class="mb-3">
                                             <label class="text-label form-label">Total a Pagar</span></label>
-                                            <input type="text" class="form-control" id="totcot" name="totcot">
+                                            <input type="text" class="form-control select-text" id="totcot" name="totcot" disabled>
                                         </div>
                                     </div>
-
                                 </div>
+
+                            </div>
+                            <div id="Pago" class="tab-pane" role="tabpanel">
+                                
                                 <div class="row">
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Forma de Pago</label>
@@ -205,7 +161,8 @@
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Forma de Entrega</label>
-                                        <select id="condicionentrega" name="condicionentrega" class="default-select form-control wide">
+                                        <select id="condicionentrega" name="condicionentrega"
+                                            class="default-select form-control wide">
                                             <option value="0">Sin Info</option>
                                             <% formaentregas.forEach(formaentrega=> { %>
                                                 <option value="<%= formaentrega.id %>">
@@ -216,11 +173,13 @@
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Fecha de entrega</label>
-                                        <input type="date" class="form-control" id="fechaentrega" name="fechaentrega"><br>
+                                        <input type="date" class="form-control" id="fechaentrega"
+                                            name="fechaentrega"><br>
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label">Descripción / Observaciones</label>
-                                        <textarea class="form-control" rows="9" id="descripcion" name="descripcion"></textarea>
+                                        <textarea class="form-control" rows="9" id="descripcion"
+                                            name="descripcion"></textarea>
                                     </div>
 
                                     <!-- <div class="mb-3 col-md-2">
@@ -233,7 +192,8 @@
                                         <a href="/cotizaciones/generaPDFdownload/30" target="_blank" class="btn btn-primary">Generar PDF</a>
                                     </div> -->
                                     <div class="sweetalert mt-5">
-                                        <button id="btnEnviarCot" class="btn btn-primary btn sweet-confirm">Procesar Cotizacion</button>
+                                        <button id="btnEnviarCot" class="btn btn-primary btn sweet-confirm">Procesar
+                                            Cotizacion</button>
                                     </div>
                                 </div>
                             </div>
@@ -241,6 +201,88 @@
                     </div>
                 </form>
 
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="miModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Descripción</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <input type="hidden" id="tipoprod">
+                        <div class="col-lg-12 mb-3">
+                            <label class="text-label form-label">Descripción</label>
+                            <select id="single-select_p">
+                                <option value="0">Elige un Producto</option>
+                                <% productos.forEach(producto=> { %>
+                                    <option value="<%= producto.id %>">
+                                        <%= producto.nombre %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="form-label">Detalles u Observaciones</label>
+                            <textarea class="form-control" rows="3" id="observacion" name="observacion"
+                                placeholder="Agrega una observación"></textarea>
+                        </div>
+                        <div class="mb-3 col-md-2">
+                            <div class="mb-3">
+                                <label class="text-label form-label">Precio</label>
+                                <input type="number" class="form-control" id="preciounit" value="0.00" disabled>
+                            </div>
+                        </div>
+                        <div class="mb-3 col-md-2">
+                            <div class="mb-3">
+                                <label class="text-label form-label">Variación</label>
+                                <input type="number" class="select-text form-control" id="preciocot" value="0.00">
+                            </div>
+                        </div>
+
+                        <div class="mb-3 col-md-3">
+                            <label class="text-label form-label">U.Medida</label>
+                            <select id="umedida" class="default-select form-control wide">
+                                <% medidas.forEach(medida=> { %>
+                                    <option value="<%= medida.id %>">
+                                        <%= medida.nombre %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+                        <div class="mb-3 col-md-2">
+                            <div class="mb-3">
+                                <label class="text-label form-label">Cantidad</label>
+                                <input type="number" class="select-text form-control" id="cantidad" value="0" required>
+                            </div>
+                        </div>
+                        <div class="mb-3 col-md-2">
+                            <div class="mb-3">
+                                <label class="text-label form-label">Importe</label>
+                                <input type="number" class="form-control" id="subtotal" value="0.00" disabled>
+                            </div>
+                        </div>
+                        <!-- <div class="mb-3 col-md-1">
+                            <div class="mb-3">
+                                <label class="text-label form-label">Agregar</label>
+                                <a href="#" id="agregarProducto" class="btn btn-primary">+</a>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <a href="#" id="agregarProducto" class="btn btn-primary">Agregar</a>
+                <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Cerrar</button>
+                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
             </div>
         </div>
     </div>
