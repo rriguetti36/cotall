@@ -84,7 +84,7 @@ exports.crearCotizacion = (req, res) => {
     //console.log(result);
     let numero = result;
     let numeroFormateado = numero.toString().padStart(8, '0');
-    //console.log(numeroFormateado);
+    console.log(numeroFormateado);
     const numcot = "CT" + numeroFormateado
     //console.log(numcot);
     cotizacion.numcot = numcot;
