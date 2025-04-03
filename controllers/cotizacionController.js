@@ -80,7 +80,7 @@ exports.crearCotizacion = (req, res) => {
   //console.log("cotizacion:", cotizacion);
   //console.log("cotizaciodet:", cotizaciodet);
 
-  Cotizacion.obtienecontador(1, (err, result) => {
+  Cotizacion.obtienecontador(res.locals.idcia, (err, result) => {
     //console.log(result);
     let numero = result;
     let numeroFormateado = numero.toString().padStart(8, '0');

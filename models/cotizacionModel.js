@@ -85,6 +85,7 @@ class Cotizacion {
     }
 
     static obtienecontador(id,callback){
+      console.log('idCIA:',id);
       db.query("UPDATE contador_doc SET num_co = num_co + 1 WHERE idcia = ?", [id], (err, results) => {
         if (err) {
           return callback(err);
@@ -96,7 +97,7 @@ class Cotizacion {
               return callback(err);
             }
             let num = results[0].num_co;
-            //console.log('Resultado como entero:',num);
+            console.log('Resultado como entero:',num);
             callback(null, num);
           });
         }
