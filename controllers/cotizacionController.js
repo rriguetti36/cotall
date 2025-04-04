@@ -185,7 +185,7 @@ exports.generaPDFDownload = async (req, res) => {
     }
 
     //const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-    console.log(chromium);
+    console.log('Ruta del ejecutable de Chromium:', await chrome.executablePath);
     /* const browser = await puppeteer.launch({
       executablePath: '/app/.apt/usr/bin/google-chrome',
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
