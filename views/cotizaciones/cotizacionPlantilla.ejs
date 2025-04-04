@@ -9,6 +9,11 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
         body {
             font-family: 'Roboto', sans-serif;
             font-size: 12px;
@@ -18,6 +23,10 @@
             -webkit-text-size-adjust: 100%;
             -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
             background-color: white;
+            margin: 0;
+            padding: 0;
+            width: 210mm;
+            height: 297mm;
         }
 
         .borderedondo {
@@ -66,14 +75,15 @@
 </head>
 
 <body>
-    <div style="width: 100%; min-height: 29.6cm;">
+    <div style="width: 100%;">
 
 
-        <div style="padding: 0px;">
-            <table style="width: 100%; border-collapse: collapse; margin-top: 0px;">
+        <div>
+            <table style="width: 100%; border-collapse: collapse;">
                 <tr>
                     <td style="width: 70%; padding: 10px;">
-                        <img class="logo-compact" width="150" src="https://cotall-edbb51592c54.herokuapp.com<%= data.logo_cia %>" alt="">
+                        <img class="logo-compact" width="150"
+                            src="https://cotall-edbb51592c54.herokuapp.com<%= data.logo_cia %>" alt="">
                         <br>
                         <span> <strong>
                                 Asesor Comercial: <%= data.agente_nombre %>
@@ -105,9 +115,9 @@
             <table style="width: 100%; border-collapse: collapse;">
                 <tr>
                     <td style="width: 50%; vertical-align: top; padding: 10px;">
-                        <h6>
+                        <h2>
                             <%= data.nombre_cia %>
-                        </h6>
+                        </h2>
                         <div><strong>RUC: </strong>
                             <%= data.ruc_cia %>
                         </div>
@@ -122,9 +132,9 @@
                         </div>
                     </td>
                     <td style="width: 50%; vertical-align: top; padding: 10px;">
-                        <h6><strong>Cliente: </strong>
+                        <h2><strong>Cliente: </strong>
                             <%= data.nombres_cli %>
-                        </h6>
+                        </h2>
                         <div><strong>RUC: </strong>
                             <%= data.ruc_cli %>
                         </div>

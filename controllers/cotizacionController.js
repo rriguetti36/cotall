@@ -197,7 +197,7 @@ exports.generaPDFDownload = async (req, res) => {
     const html = await ejs.renderFile(path.join(__dirname, '../views/cotizaciones/cotizacionPlantilla.ejs'), { data, datadet });
     await page.setContent(html);
     //await page.setContent(html, { waitUntil: 'networkidle0' });
-    
+
     const pdfBuffer = await page.pdf({ 
       format: 'A4', 
       printBackground: true,
@@ -208,6 +208,7 @@ exports.generaPDFDownload = async (req, res) => {
         bottom: '10mm',
         left: '10mm',
         scale: 1,
+        preferCSSPageSize: true,
       },
     });
 
