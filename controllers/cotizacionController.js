@@ -197,24 +197,16 @@ exports.generaPDFDownload = async (req, res) => {
     const html = await ejs.renderFile(path.join(__dirname, '../views/cotizaciones/cotizacionPlantilla.ejs'), { data, datadet });
     await page.setContent(html);
     //await page.setContent(html, { waitUntil: 'networkidle0' });
-
-    const options = {
-      format: 'A4',
-      //border: "10mm"
-      //base: 'file://' + path.join(__dirname, 'theme') + '/'
-      //phantomPath: path.join(__dirname, '../node_modules', 'phantomjs-prebuilt', 'bin', 'phantomjs')
-      //base: 'file:///D:/Desarrollo/Proyectos/Express_JS/Clientes/Promixar',  // Ruta base para tus archivos CSS, imágenes, etc.
-    };
-
+    
     const pdfBuffer = await page.pdf({ 
       format: 'A4', 
       printBackground: true,
       landscape: false, 
       margin: {               // Márgenes personalizados
-        top: '20mm',
-        right: '20mm',
-        bottom: '20mm',
-        left: '20mm',
+        top: '10mm',
+        right: '10mm',
+        bottom: '10mm',
+        left: '10mm',
         scale: 1,
       },
     });
