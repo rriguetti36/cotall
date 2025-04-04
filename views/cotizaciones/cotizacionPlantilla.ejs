@@ -116,9 +116,11 @@
             <table style="width: 100%; border-collapse: collapse;">
                 <tr>
                     <td style="width: 50%; vertical-align: top; padding: 10px;">
-                        <h2>
-                            <%= data.nombre_cia %>
-                        </h2>
+                        <div>
+                            <h2>
+                                <%= data.nombre_cia %>
+                            </h2>
+                        </div>
                         <div><strong>RUC: </strong>
                             <%= data.ruc_cia %>
                         </div>
@@ -137,7 +139,7 @@
                     </td>
                     <td style="width: 50%; vertical-align: top; padding: 10px;">
                         <div>
-                            <strong>Cliente: </strong><h2>
+                            <h2>
                                 <%= data.nombres_cli %>
                             </h2>
                         </div>
@@ -224,12 +226,7 @@
                                         <%= data.formaentrega %>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td><strong class="text-black">Cuentas de Banco</strong></td>
-                                    <td class="left">
-                                        <span><%= data.ctabco %></span>
-                                    </td>
-                                </tr>
+                                
                             </tbody>
                         </table>
                     </td>
@@ -262,8 +259,14 @@
             <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
                 <tr>
                     <td style="width: 100%;">
-                        <table class="table table-clear borderedondo" style="width: 100%;">
+                        <table class="table table-clear" style="width: 100%;">
                             <tbody>
+                                <tr>
+                                    <td><strong class="text-black">Cuentas de Banco</strong></td>
+                                    <td class="left">
+                                        <span><%= data.ctabco %></span>
+                                    </td>
+                                </tr>
                                 <tr>
                                     <td><strong class="text-black">Detalles de la Cotización </strong></td>
                                     <td class="left">
