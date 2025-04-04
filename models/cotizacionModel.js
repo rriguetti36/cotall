@@ -159,7 +159,7 @@ class Cotizacion {
                   f.email email_cia,
                   f.telefono telefono_cia,
                   f.imagen logo_cia,
-                  concat(g.nombres, ' ', b.apellido) agente_nombre,
+                  concat(g.nombres, ' ', g.apellidos) agente_nombre,
                   g.email agente_email,
                   c.nombre moneda,
                   g.telefono agente_telefono,
