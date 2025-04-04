@@ -168,6 +168,53 @@ exports.generaPDFprevia = (req, res) => {
   res.render("cotizaciones/cotizacionPDF");
 }
 
+exports.generaPDFDownload = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const data = await obtieneCotIdPDFAsync(id);
+
+    if (!data || Object.keys(data).length === 0) {
+      return res.status(404).json({ error: 'Data de cotización no encontrada' });
+    }
+
+    const datadet = await obtieneCotIdPDFDetalleAsync(id);
+
+    if (!datadet || datadet.length === 0) {
+      return res.status(404).json({ error: 'Detalle de cotización no encontrado' });
+    }
+
+    //const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
+    const page = await browser.newPage();
+    //const templatePath = path.join(__dirname, '../views/cotizaciones/', 'cotizacionPlantilla.ejs');
+
+    const html = await ejs.renderFile(path.join(__dirname, '../views/cotizaciones/cotizacionPlantilla.ejs'), { data, datadet });
+    await page.setContent(html);
+    //await page.setContent(html, { waitUntil: 'networkidle0' });
+    const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
+
+    await browser.close();
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'inline; filename=documento.pdf',
+    });
+
+    res.send(pdfBuffer);
+    /*  res.json({
+       cotizacion: data,
+       detalle: datadet
+     }); */
+
+  } catch (error) {
+    console.error('Error generando PDF:', error);
+    res.status(500).send('Error al generar el PDF');
+  }
+};
 /* exports.generaPDFDownload = async (req, res) => {
   const { id } = req.params;
   
@@ -231,49 +278,7 @@ exports.generaPDFprevia = (req, res) => {
   }
 } */
 
-exports.generaPDFDownload = async (req, res) => {
-  const { id } = req.params;
 
-  try {
-    const data = await obtieneCotIdPDFAsync(id);
-
-    if (!data || Object.keys(data).length === 0) {
-      return res.status(404).json({ error: 'Data de cotización no encontrada' });
-    }
-
-    const datadet = await obtieneCotIdPDFDetalleAsync(id);
-
-    if (!datadet || datadet.length === 0) {
-      return res.status(404).json({ error: 'Detalle de cotización no encontrado' });
-    }
-
-    const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-    const page = await browser.newPage();
-    //const templatePath = path.join(__dirname, '../views/cotizaciones/', 'cotizacionPlantilla.ejs');
-
-    const html = await ejs.renderFile(path.join(__dirname, '../views/cotizaciones/cotizacionPlantilla.ejs'), { data, datadet });
-    await page.setContent(html);
-    //await page.setContent(html, { waitUntil: 'networkidle0' });
-    const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
-
-    await browser.close();
-
-    res.set({
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': 'inline; filename=documento.pdf',
-    });
-
-    res.send(pdfBuffer);
-    /*  res.json({
-       cotizacion: data,
-       detalle: datadet
-     }); */
-
-  } catch (error) {
-    console.error('Error generando PDF:', error);
-    res.status(500).send('Error al generar el PDF');
-  }
-};
 
 
 
