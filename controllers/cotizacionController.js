@@ -5,10 +5,10 @@ const Usuario = require('../models/userModel');
 //const express = require('express');
 const path = require('path');  // Para manejar las rutas de archivos
 const ejs = require('ejs');
-//const puppeteer = require('puppeteer');
 const pdf = require('html-pdf');
 const fs = require('fs');
-const puppeteer = require('puppeteer');
+const chromium = require('chrome-aws-lambda');
+const puppeteer = require('puppeteer-core');
 const util = require('util');
 const obtieneCotIdPDFAsync = util.promisify(Cotizacion.obtieneCotIdPDF);
 const obtieneCotIdPDFDetalleAsync = util.promisify(Cotizacion.obtieneCotIdPDFDetalle);
@@ -185,11 +185,16 @@ exports.generaPDFDownload = async (req, res) => {
     }
 
     //const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-    const browser = await puppeteer.launch({  
+    const browser = await puppeteer.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath || '/usr/bin/google-chrome',
+      headless: chromium.headless,
+    });
+    /* const browser = await puppeteer.launch({  
       headless: 'new',
       executablePath: process.env.CHROME_BIN || '/app/.apt/usr/bin/google-chrome',
       args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
+    }); */
     const page = await browser.newPage();
     //const templatePath = path.join(__dirname, '../views/cotizaciones/', 'cotizacionPlantilla.ejs');
 
