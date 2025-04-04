@@ -8,6 +8,10 @@ const ejs = require('ejs');
 //const puppeteer = require('puppeteer');
 const pdf = require('html-pdf');
 const fs = require('fs');
+const puppeteer = require('puppeteer');
+const util = require('util');
+const obtieneCotIdPDFAsync = util.promisify(Cotizacion.obtieneCotIdPDF);
+const obtieneCotIdPDFDetalleAsync = util.promisify(Cotizacion.obtieneCotIdPDFDetalle);
 
 exports.getAllCotizaciones = (req, res) => {
   if (!req.session.user) {
@@ -26,7 +30,7 @@ exports.creaCotizacionForm = (req, res) => {
   if (!req.session.user) {
     return res.redirect("/");
   }
-  Cotizacion.buscaAllCli(res.locals.idcia,(err, clientes) => {
+  Cotizacion.buscaAllCli(res.locals.idcia, (err, clientes) => {
     if (err) {
       return res.status(500).send("Error al obtener Clientes");
     }
@@ -42,7 +46,7 @@ exports.creaCotizacionForm = (req, res) => {
           if (err) {
             return res.status(500).send("Error al obtener Forma Entrega");
           }
-          Cotizacion.buscaAllProd(res.locals.idcia,(err, productos) => {
+          Cotizacion.buscaAllProd(res.locals.idcia, (err, productos) => {
             if (err) {
               return res.status(500).send("Error al obtener productos individual");
             }
@@ -50,7 +54,7 @@ exports.creaCotizacionForm = (req, res) => {
               if (err) {
                 return res.status(500).send("Error al obtener Unidad de medida");
               }
-              Usuario.getNombreUsuario(req.session.user,(err, asesor) => {
+              Usuario.getNombreUsuario(req.session.user, (err, asesor) => {
                 if (err) {
                   return res.status(500).send("Error al obtener asesor comercial");
                 }
@@ -91,7 +95,7 @@ exports.crearCotizacion = (req, res) => {
     cotizacion.iduser = res.locals.iduser;
     console.log("cotizacion ACT:", cotizacion);
     console.log("iduser:", res.locals.iduser);
-    
+
     Cotizacion.crearCotizacion(cotizacion, (err, results) => {
       if (err) {
         console.log(err)
@@ -140,10 +144,10 @@ exports.obtieneProductoID = (req, res) => {
     if (err) {
       return res.status(500).send("Error al obtener producto");
     }
-    else{
-      const tipo  = (tipoProd && tipoProd.tipo) || 1;
+    else {
+      const tipo = (tipoProd && tipoProd.tipo) || 1;
       console.log(tipo);
-      Cotizacion.obtieneProdId(tipo,id, (err, producto) => {
+      Cotizacion.obtieneProdId(tipo, id, (err, producto) => {
         //console.log(Object.keys(producto).length);
         if (err) {
           return res.status(500).send("Error al obtener producto");
@@ -164,8 +168,9 @@ exports.generaPDFprevia = (req, res) => {
   res.render("cotizaciones/cotizacionPDF");
 }
 
-exports.generaPDFDownload = async (req, res) => {
+/* exports.generaPDFDownload = async (req, res) => {
   const { id } = req.params;
+  
   try {
 
     Cotizacion.obtieneCotIdPDF(id, (err, data) => {
@@ -224,7 +229,52 @@ exports.generaPDFDownload = async (req, res) => {
     console.error(error);
     res.status(500).send('Error al generar el PDF');
   }
-}
+} */
+
+exports.generaPDFDownload = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const data = await obtieneCotIdPDFAsync(id);
+
+    if (!data || Object.keys(data).length === 0) {
+      return res.status(404).json({ error: 'Data de cotización no encontrada' });
+    }
+
+    const datadet = await obtieneCotIdPDFDetalleAsync(id);
+
+    if (!datadet || datadet.length === 0) {
+      return res.status(404).json({ error: 'Detalle de cotización no encontrado' });
+    }
+
+    const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+    const page = await browser.newPage();
+    //const templatePath = path.join(__dirname, '../views/cotizaciones/', 'cotizacionPlantilla.ejs');
+
+    const html = await ejs.renderFile(path.join(__dirname, '../views/cotizaciones/cotizacionPlantilla.ejs'), { data, datadet });
+    await page.setContent(html);
+    //await page.setContent(html, { waitUntil: 'networkidle0' });
+    const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
+
+    await browser.close();
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'inline; filename=documento.pdf',
+    });
+
+    res.send(pdfBuffer);
+    /*  res.json({
+       cotizacion: data,
+       detalle: datadet
+     }); */
+
+  } catch (error) {
+    console.error('Error generando PDF:', error);
+    res.status(500).send('Error al generar el PDF');
+  }
+};
+
 
 
 

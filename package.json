@@ -27,6 +27,7 @@
     "mysql2": "^3.12.0",
     "node-sass": "^9.0.0",
     "nodemon": "^3.1.9",
-    "phantomjs-prebuilt": "^2.1.16"
+    "phantomjs-prebuilt": "^2.1.16",
+    "puppeteer": "^24.6.0"
   }
 }
