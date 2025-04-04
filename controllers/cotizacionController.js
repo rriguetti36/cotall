@@ -185,9 +185,10 @@ exports.generaPDFDownload = async (req, res) => {
     }
 
     //const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    const browser = await puppeteer.launch({  
+      headless: 'new',
+      executablePath: process.env.CHROME_BIN || '/app/.apt/usr/bin/google-chrome',
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
     const page = await browser.newPage();
     //const templatePath = path.join(__dirname, '../views/cotizaciones/', 'cotizacionPlantilla.ejs');
