@@ -30,6 +30,6 @@
     "nodemon": "^3.1.9",
     "phantomjs-prebuilt": "^2.1.16",
     "puppeteer": "^24.6.0",
-    "puppeteer-core": "^10.1.0"
+    "puppeteer-core": "^10.4.0"
   }
 }

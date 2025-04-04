@@ -185,7 +185,7 @@ exports.generaPDFDownload = async (req, res) => {
     }
 
     //const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-    console.log('Ruta del ejecutable de Chromium:', await chrome.executablePath);
+    console.log('Ruta del ejecutable de Chromium:', await chromium.executablePath);
     /* const browser = await puppeteer.launch({
       executablePath: '/app/.apt/usr/bin/google-chrome',
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
@@ -193,7 +193,7 @@ exports.generaPDFDownload = async (req, res) => {
     }); */
     const browser = await puppeteer.launch({
       args: chromium.args,
-      executablePath: await chromium.executablePath || '/usr/bin/google-chrome',
+      executablePath: await chromium.executablePath || '/app/.apt/usr/bin/google-chrome',
       headless: chromium.headless,
     });
     // Crea una nueva página en el navegador
