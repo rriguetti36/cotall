@@ -191,36 +191,7 @@ exports.generaPDFDownload = async (req, res) => {
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
       headless: true
     });
-    /* const browser = await puppeteer.launch({
-      args: chromium.args,
-      executablePath: await chromium.executablePath || '/app/.chrome-for-testing/chrome-linux64/chrome',
-      headless: chromium.headless,
-    }); */
-    // Crea una nueva página en el navegador
     const page = await browser.newPage();
-    await page.setContent('<h1>Hola PDF</h1>'); // Aquí va tu HTML dinámico
-
-    // Genera el PDF
-    const pdfBuffer = await page.pdf({ format: 'A4' });
-
-    // Cierra el navegador
-    await browser.close();
-
-    // Envía el archivo PDF como respuesta
-    res.set({
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': 'attachment; filename="cotizacion.pdf"',
-    });
-    res.send(pdfBuffer);
-    /* const browser = await puppeteer.launch({  
-      headless: 'new',
-      executablePath: process.env.CHROME_BIN || '/app/.apt/usr/bin/google-chrome',
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    }); */
-
-
-
-    /* const page = await browser.newPage();
     //const templatePath = path.join(__dirname, '../views/cotizaciones/', 'cotizacionPlantilla.ejs');
 
     const html = await ejs.renderFile(path.join(__dirname, '../views/cotizaciones/cotizacionPlantilla.ejs'), { data, datadet });
@@ -235,7 +206,33 @@ exports.generaPDFDownload = async (req, res) => {
       'Content-Disposition': 'inline; filename=documento.pdf',
     });
 
+    res.send(pdfBuffer); 
+    /* const browser = await puppeteer.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath || '/app/.chrome-for-testing/chrome-linux64/chrome',
+      headless: chromium.headless,
+    }); */
+    /* // Crea una nueva página en el navegador
+    const page = await browser.newPage();
+    await page.setContent('<h1>Hola PDF</h1>'); // Aquí va tu HTML dinámico
+
+    // Genera el PDF
+    const pdfBuffer = await page.pdf({ format: 'A4' });
+
+    // Cierra el navegador
+    await browser.close();
+
+    // Envía el archivo PDF como respuesta
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'attachment; filename="cotizacion.pdf"',
+    });
     res.send(pdfBuffer); */
+    /* const browser = await puppeteer.launch({  
+      headless: 'new',
+      executablePath: process.env.CHROME_BIN || '/app/.apt/usr/bin/google-chrome',
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    }); */
 
   } catch (error) {
     console.error('Error generando PDF:', error);
