@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "sass": "node-sass --watch scss/main.scss css/style.css"
+    "sass": "node-sass --watch scss/main.scss css/style.css",
+    "postinstall": "apt-get update && apt-get install -y chromium"
   },
   "keywords": [],
   "author": "",
