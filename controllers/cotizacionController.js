@@ -186,16 +186,16 @@ exports.generaPDFDownload = async (req, res) => {
 
     //const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
     console.log('Ruta del ejecutable de Chromium:', await chromium.executablePath);
-    /* const browser = await puppeteer.launch({
-      executablePath: '/app/.apt/usr/bin/google-chrome',
+    const browser = await puppeteer.launch({
+      executablePath: '/app/.chrome-for-testing/chrome-linux64/chrome',
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
       headless: true
-    }); */
-    const browser = await puppeteer.launch({
-      args: chromium.args,
-      executablePath: await chromium.executablePath || '/app/.apt/usr/bin/google-chrome',
-      headless: chromium.headless,
     });
+    /* const browser = await puppeteer.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath || '/app/.chrome-for-testing/chrome-linux64/chrome',
+      headless: chromium.headless,
+    }); */
     // Crea una nueva página en el navegador
     const page = await browser.newPage();
     await page.setContent('<h1>Hola PDF</h1>'); // Aquí va tu HTML dinámico
