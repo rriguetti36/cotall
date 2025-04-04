@@ -45,7 +45,8 @@
             border: 2px solid #2c3e50;
             border-radius: 10px;
             overflow: hidden;
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
+            font-size: 12px;
             margin: 20px 0;
         }
 
@@ -124,11 +125,14 @@
                         <div><strong>Dirección: </strong>
                             <%= data.direccion_ruc %>
                         </div>
-                        <div><strong>Correo: </strong>
+                        <div><strong>e-mail: </strong>
                             <%= data.email_cia %>
                         </div>
                         <div><strong>Teléfonos: </strong>
                             <%= data.telefono_cia %>
+                        </div>
+                        <div><strong>Web: </strong>
+                            <%= data.pagweb %>
                         </div>
                     </td>
                     <td style="width: 50%; vertical-align: top; padding: 10px;">
@@ -138,18 +142,19 @@
                         <div><strong>RUC: </strong>
                             <%= data.ruc_cli %>
                         </div>
-                        <div><strong>Contacto: </strong>
-                            <%= data.contac_cli %>
-                        </div>
                         <div><strong>Dirección: </strong>
                             <%= data.direccion_cli %>
                         </div>
-                        <div><strong>Correo: </strong>
+                        <div><strong>e-mail: </strong>
                             <%= data.email_cli %>
+                        </div>
+                        <div><strong>Contacto: </strong>
+                            <%= data.contac_cli %>
                         </div>
                         <div><strong>Telefóno: </strong>
                             <%= data.telcontac_cli %>
                         </div>
+
                     </td>
                 </tr>
                 <small> Por la Presente nos es grato hacerle llegar nuestra cotización</small>

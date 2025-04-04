@@ -163,7 +163,8 @@ class Cotizacion {
                   g.email agente_email,
                   c.nombre moneda,
                   g.telefono agente_telefono,
-                  f.ctabco
+                  f.ctabco,
+                  f.pagweb
                   FROM cotizacion_cab a 
                   JOIN clientes b ON a.idcli = b.id 
                   JOIN monedas c ON a.idmon = c.id 
