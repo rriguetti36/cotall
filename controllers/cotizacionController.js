@@ -184,19 +184,17 @@ exports.generaPDFDownload = async (req, res) => {
       return res.status(404).json({ error: 'Detalle de cotización no encontrado' });
     }
 
-    //const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
     console.log('Ruta del ejecutable de Chromium:', await chromium.executablePath);
     const browser = await puppeteer.launch({
+      //executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
       executablePath: '/app/.chrome-for-testing/chrome-linux64/chrome',
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
       headless: true
     });
     const page = await browser.newPage();
-    //const templatePath = path.join(__dirname, '../views/cotizaciones/', 'cotizacionPlantilla.ejs');
 
     const html = await ejs.renderFile(path.join(__dirname, '../views/cotizaciones/cotizacionPlantilla.ejs'), { data, datadet });
     await page.setContent(html);
-    //await page.setContent(html, { waitUntil: 'networkidle0' });
 
     const pdfBuffer = await page.pdf({ 
       format: 'A4', 
@@ -220,33 +218,6 @@ exports.generaPDFDownload = async (req, res) => {
     });
 
     res.send(pdfBuffer); 
-    /* const browser = await puppeteer.launch({
-      args: chromium.args,
-      executablePath: await chromium.executablePath || '/app/.chrome-for-testing/chrome-linux64/chrome',
-      headless: chromium.headless,
-    }); */
-    /* // Crea una nueva página en el navegador
-    const page = await browser.newPage();
-    await page.setContent('<h1>Hola PDF</h1>'); // Aquí va tu HTML dinámico
-
-    // Genera el PDF
-    const pdfBuffer = await page.pdf({ format: 'A4' });
-
-    // Cierra el navegador
-    await browser.close();
-
-    // Envía el archivo PDF como respuesta
-    res.set({
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': 'attachment; filename="cotizacion.pdf"',
-    });
-    res.send(pdfBuffer); */
-    /* const browser = await puppeteer.launch({  
-      headless: 'new',
-      executablePath: process.env.CHROME_BIN || '/app/.apt/usr/bin/google-chrome',
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    }); */
-
   } catch (error) {
     console.error('Error generando PDF:', error);
     res.status(500).send('Error al generar el PDF');
