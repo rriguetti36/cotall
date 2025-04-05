@@ -26,8 +26,8 @@ exports.createClienteForm = (req, res) => {
 };
 
 exports.createCliente = (req, res) => {
-  const { tipo,documento,nombre,apellido,razonsocial,ruc,direccion,telefono,telefonows,email,fechanac,ciudad,pais,contacto,telefonoct,estados, idcia } = req.body;
-  const cliente = { tipo,documento,nombre,apellido,razonsocial,ruc,direccion,telefono,telefonows,email,fechanac,ciudad,pais,contacto,telefonoct,estados,idcia };
+  const { tipo,idDoc,documento,nombre,apellido,razonsocial,ruc,direccion,telefono,telefonows,email,fechanac,ciudad,pais,contacto,telefonoct,estados, idcia } = req.body;
+  const cliente = { tipo,idDoc,documento,nombre,apellido,razonsocial,ruc,direccion,telefono,telefonows,email,fechanac,ciudad,pais,contacto,telefonoct,estados,idcia };
 
   cliente.estados = 'activo';
   cliente.idcia = res.locals.idcia;
@@ -61,8 +61,8 @@ exports.editClienteForm = (req, res) => {
 
 exports.editCliente = (req, res) => {
   const { id } = req.params;
-  const { tipo,documento,nombre,apellido,razonsocial,ruc,direccion,telefono,telefonows,email,fechanac,ciudad,pais,contacto,telefonoct,estados } = req.body;
-  const cliente = { tipo,documento,nombre,apellido,razonsocial,ruc,direccion,telefono,telefonows,email,fechanac,ciudad,pais,contacto,telefonoct,estados };
+  const { tipo,idDoc,documento,nombre,apellido,razonsocial,ruc,direccion,telefono,telefonows,email,fechanac,ciudad,pais,contacto,telefonoct,estados } = req.body;
+  const cliente = { tipo,idDoc,documento,nombre,apellido,razonsocial,ruc,direccion,telefono,telefonows,email,fechanac,ciudad,pais,contacto,telefonoct,estados };
 
   Cliente.update(id, cliente, (err) => {
     if (err) {

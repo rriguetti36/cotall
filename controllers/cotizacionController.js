@@ -10,6 +10,8 @@ const fs = require('fs');
 const chromium = require('chrome-aws-lambda');
 const puppeteer = require('puppeteer-core');
 const util = require('util');
+const moment = require('moment');
+moment.locale('es');
 const obtieneCotIdPDFAsync = util.promisify(Cotizacion.obtieneCotIdPDF);
 const obtieneCotIdPDFDetalleAsync = util.promisify(Cotizacion.obtieneCotIdPDFDetalle);
 
@@ -21,7 +23,13 @@ exports.getAllCotizaciones = (req, res) => {
     if (err) {
       return res.status(500).send("Error al obtener cotizaciones");
     }
-
+    cotizaciones = cotizaciones.map(c => {
+      return {
+        ...c,
+        fechaFormateada: moment(c.fecha).format('LL') // Ej: "4 de abril de 2025"
+      };
+    });
+    console.log(cotizaciones);
     res.render("cotizaciones/index", { cotizaciones });
   });
 };
@@ -105,6 +113,8 @@ exports.crearCotizacion = (req, res) => {
         // Obtener el id de la cotización recién creada
         const idCotizacion = results.insertId;
         const productos = req.body.cotizaciodet; // Supongamos que `productos` es un array con el detalle
+        //registra el status
+        //Cotizacion.crearstatus()
         productos.forEach(producto => {
           const detalleCotizacion = {
             idcot: idCotizacion,
@@ -223,103 +233,3 @@ exports.generaPDFDownload = async (req, res) => {
     res.status(500).send('Error al generar el PDF');
   }
 };
-/* exports.generaPDFDownload = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-
-    Cotizacion.obtieneCotIdPDF(id, (err, data) => {
-      //console.log(Object.keys(producto).length);
-      if (err) {
-        return res.status(500).send("Error al obtener cotizacion");
-      }
-      else {
-        if (Object.keys(data).length > 0) {
-
-          Cotizacion.obtieneCotIdPDFDetalle(id, (err, datadet) => {
-            if (err) {
-              return res.status(500).send("Error al obtener el detalle");
-            }
-            // Ruta a la plantilla EJS
-            const templatePath = path.join(__dirname, '../views/cotizaciones/', 'cotizacionPlantilla.ejs');
-            console.log(data);
-            console.log(datadet);
-            // Renderizar el archivo EJS con los datos
-            ejs.renderFile(templatePath, { data, datadet }, (err, html) => {
-              if (err) {
-                console.error('Error al renderizar la plantilla EJS:', err);
-                return res.status(500).send('Error al generar el HTML');
-              }
-
-              //console.log(html);
-
-              // Opciones de configuración para el PDF
-              const options = {
-                format: 'A4',
-                //border: "10mm"
-                //base: 'file://' + path.join(__dirname, 'theme') + '/'
-                //phantomPath: path.join(__dirname, '../node_modules', 'phantomjs-prebuilt', 'bin', 'phantomjs')
-                //base: 'file:///D:/Desarrollo/Proyectos/Express_JS/Clientes/Promixar',  // Ruta base para tus archivos CSS, imágenes, etc.
-              };
-
-              // Crear el PDF a partir del HTML generado
-              pdf.create(html, options).toFile('./output.pdf', (err, result) => {
-                if (err) {
-                  console.error('Error al generar el PDF:', err);
-                  return res.status(500).send('Error al generar el PDF');
-                }
-
-                // Responder con el archivo PDF generado
-                res.contentType("application/pdf");
-                res.sendFile(result.filename);
-              });
-            });
-          })
-        } else {
-          res.status(404).json({ error: 'data de cotizacion no encontrado' });
-        }
-      }
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error al generar el PDF');
-  }
-} */
-
-
-
-
-
-
-// // Datos dinámicos para pasar a la plantilla
-// const data = {
-//   nombre: "Juan Pérez",
-//   producto: "Camiseta",
-//   precio: 19.99,
-//   cantidad: 3
-// };
-// // Ruta al archivo de la plantilla EJS
-// const filePath = path.join(__dirname, '../views/cotizaciones/','cotizacionPDF.ejs');
-// console.log(filePath);
-// // Renderizar la plantilla EJS con los datos
-// const htmlContent = await ejs.renderFile(filePath, data);
-
-// // Iniciar Puppeteer
-// const browser = await puppeteer.launch();
-// const page = await browser.newPage();
-
-// // Establecer el contenido HTML de la página con el HTML renderizado
-// await page.setContent(htmlContent);
-
-// // Generar el PDF
-// const pdfBuffer = await page.pdf({
-//   format: 'A4',
-//   printBackground: true  // Imprimir fondos (si los hay)
-// });
-
-// // Cerrar Puppeteer
-// await browser.close();
-
-// // Enviar el PDF como respuesta
-// res.contentType("application/pdf");
-// res.send(pdfBuffer);

@@ -7,96 +7,107 @@
 
 <div class="col-xl-12 col-lg-12">
   <div class="card">
-      <div class="card-header">
-          <h4 class="card-title">Editar Cliente</h4>
-      </div>
-      <div class="card-body">
-          <div class="basic-form">
-            <form action="/clientes/edit/<%= cliente.id %>" method="POST">
-
-                  <div class="row">
-                      <div class="mb-3 col-md-6">
-                          <label class="form-label">Tipo Cliente</label>
-                          <select name="tipo" id="tipo" class="default-select form-control wide" required>
-                            <% tipocli.forEach(tipoc => { %>
-                              <option value="<%= tipoc.id %>" 
-                                      <%= tipoc.id === cliente.tipo ? 'selected' : '' %> >
-                                <%= tipoc.nombre %>
-                              </option>
-                            <% }) %>
-                          </select>
-                      </div>
-                      <div class="mb-3 col-md-6">
-                          <label class="form-label">Tipo Documento</label>
-                          <select name="idDoc" id="idDoc" class="default-select form-control wide" required>
-                            <% documentos.forEach(documento => { %>
-                              <option value="<%= documento.id %>" 
-                                      <%= documento.id === cliente.idDoc ? 'selected' : '' %> >
-                                <%= documento.nombre %>
-                              </option>
-                            <% }) %>
-                          </select>
-                      </div>
-                      <div class="mb-3 col-md-6">
-                          <label class="form-label">Documento Nro</label>
-                          <input type="text" class="form-control" id="documento" name="documento" value="<%= cliente.documento %>" required>
-                      </div>
-                      <div class="mb-3 col-md-6">
-                          <label class="form-label">Nombres</label>
-                          <input type="text" class="form-control" id="nombre" name="nombre" value="<%= cliente.nombre %>" required>
-                      </div>
-                      <div class="mb-3 col-md-6">
-                          <label class="form-label">Apellidos</label>
-                          <input type="text" class="form-control" id="apellido" name="apellido" value="<%= cliente.apellido %>" required>
-                    </div>
-                  </div>
-                  <div class="row">
-                      <div class="mb-3 col-md-6">
-                          <label class="form-label">Razón Social</label>
-                          <input type="text" class="form-control" id="razonsocial" name="razonsocial" value="<%= cliente.razonsocial %>" required>
-                      </div>
-                      <div class="mb-3 col-md-6">
-                          <label class="form-label">RUC</label>
-                          <input type="text" class="form-control" id="ruc" name="ruc" value="<%= cliente.ruc %>" required>
-                      </div>
-                      <div class="mb-3 col-md-6">
-                        <label class="form-label">Direccion</label>
-                        <input type="text" class="form-control" id="direccion" name="direccion" value="<%= cliente.direccion %>">
-                      </div>
-                      <div class="mb-3 col-md-6">
-                        <label class="form-label">Teléfono</label>
-                        <input type="text" class="form-control" id="telefono" name="telefono" value="<%= cliente.telefono %>" required>
-                      </div>
-                      <div class="mb-3 col-md-6">
-                        <label class="form-label">WhatsApp</label>
-                        <input type="text" class="form-control" id="telefonows" name="telefonows" value="<%= cliente.telefonows %>" required>
-                      </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="mb-3 col-md-6">
-                        <label class="form-label">Correo</label>
-                        <input type="email" class="form-control" id="email" name="email" value="<%= cliente.email %>" required>
-                    </div>
-                    <div class="mb-3 col-md-6">
-                        <label class="form-label">Nacimiento</label>
-                        <input type="date" class="form-control" id="fechanac" name="fechanac" value="<%= cliente.fechanac %>">
-                    </div>
-                    <div class="mb-3 col-md-6">
-                        <label class="form-label">Contacto</label>
-                        <input type="text" class="form-control" id="contacto" name="contacto" value="<%= cliente.contacto %>">
-                    </div>
-                    <div class="mb-3 col-md-6">
-                        <label class="form-label">Teléfono Contacto</label>
-                        <input type="text" class="form-control" id="telefonoct" name="telefonoct" value="<%= cliente.telefonoct %>">
-                    </div>
-                </div>
-                  
-                  <button type="submit" class="btn btn-primary">Actualizar Cliente</button>
-              </form>
+    <div class="card-header">
+      <h4 class="card-title">Editar Cliente</h4>
+    </div>
+    <div class="card-body">
+      <div class="basic-form">
+        <form action="/clientes/edit/<%= cliente.id %>" method="POST">
+          <div class="row">
+            <div type="hidden" id="idcli" value="<%= cliente.id %>"></div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Tipo Cliente</label>
+              <select name="tipo" id="tipo" class="default-select form-control wide" required>
+                <% tipocli.forEach(tipoc=> { %>
+                  <option value="<%= tipoc.id %>" <%=tipoc.id===cliente.tipo ? 'selected' : '' %> >
+                    <%= tipoc.nombre %>
+                  </option>
+                  <% }) %>
+              </select>
+            </div>
           </div>
+          <div id="divpersona" class="row">
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Tipo Documento</label>
+              <select name="idDoc" id="idDoc" class="default-select form-control wide" required>
+                <% documentos.forEach(documento=> { %>
+                  <option value="<%= documento.id %>" <%=documento.id===cliente.idDoc ? 'selected' : '' %> >
+                    <%= documento.nombre %>
+                  </option>
+                  <% }) %>
+              </select>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Documento Nro</label>
+              <input type="text" class="form-control" id="documento" name="documento" value="<%= cliente.documento %>">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Nombres</label>
+              <input type="text" class="form-control" id="nombre" name="nombre" value="<%= cliente.nombre %>">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Apellidos</label>
+              <input type="text" class="form-control" id="apellido" name="apellido" value="<%= cliente.apellido %>">
+            </div>
+          </div>
+          <div id="divempresa" class="row">
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Razón Social</label>
+              <input type="text" class="form-control" id="razonsocial" name="razonsocial"
+                value="<%= cliente.razonsocial %>">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label">RUC</label>
+              <input type="text" class="form-control" id="ruc" name="ruc" value="<%= cliente.ruc %>">
+            </div>
+          </div>
+          <div class="row">
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Direccion</label>
+              <input type="text" class="form-control" id="direccion" name="direccion" value="<%= cliente.direccion %>">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Teléfono</label>
+              <input type="text" class="form-control" id="telefono" name="telefono" value="<%= cliente.telefono %>"
+                required>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label">WhatsApp</label>
+              <input type="text" class="form-control" id="telefonows" name="telefonows"
+                value="<%= cliente.telefonows %>" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Correo</label>
+              <input type="email" class="form-control" id="email" name="email" value="<%= cliente.email %>" required>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Nacimiento</label>
+              <input type="date" class="form-control" id="fechanac" name="fechanac" value="<%= cliente.fechanac %>">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Contacto</label>
+              <input type="text" class="form-control" id="contacto" name="contacto" value="<%= cliente.contacto %>">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Teléfono Contacto</label>
+              <input type="text" class="form-control" id="telefonoct" name="telefonoct"
+                value="<%= cliente.telefonoct %>">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Actualizar Cliente</button>
+        </form>
       </div>
+    </div>
   </div>
 </div>
 
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- sweetalert -->
+<script src="/theme/vendor/sweetalert2/dist/sweetalert2.min.js"></script>
+<script src="/theme/js/plugins-init/sweetalert.init.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/public/js/cliente.js"></script>

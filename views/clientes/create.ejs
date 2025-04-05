@@ -7,87 +7,100 @@
 
 <div class="col-xl-12 col-lg-12">
   <div class="card">
-      <div class="card-header">
-          <h4 class="card-title">Crear Cliente</h4>
-      </div>
-      <div class="card-body">
-          <div class="basic-form">
-            <form action="/clientes/create" method="POST">
-
-                  <div class="row">
-                      <div class="mb-3 col-md-6">
-                          <label class="form-label">Tipo Cliente</label>
-                          <select id="tipo" name="tipo" class="default-select form-control wide">
-                            <option value="1">Natural</option>
-                            <option value="2">Empresa RUC</option>
-                          </select>
-                      </div>
-                      <div class="mb-3 col-md-6">
-                          <label class="form-label">Tipo Documento</label>
-                          <select id="idDoc" name="idDoc" class="default-select form-control wide">
-                            <% documentos.forEach(documento => { %>
-                              <option value="<%= documento.id %>"><%= documento.nombre %></option>
-                            <% }); %>
-                          </select>
-                      </div>
-                      <div class="mb-3 col-md-6">
-                          <label class="form-label">Documento Nro</label>
-                          <input type="text" class="form-control" id="documento" name="documento" required>
-                      </div>
-                      <div class="mb-3 col-md-6">
-                          <label class="form-label">Nombres</label>
-                          <input type="text" class="form-control" id="nombre" name="nombre" required>
-                      </div>
-                      <div class="mb-3 col-md-6">
-                          <label class="form-label">Apellidos</label>
-                          <input type="text" class="form-control" id="apellido" name="apellido" required>
-                    </div>
-                  </div>
-                  <div class="row">
-                      <div class="mb-3 col-md-6">
-                          <label class="form-label">Razón Social</label>
-                          <input type="text" class="form-control" id="razonsocial" name="razonsocial" required>
-                      </div>
-                      <div class="mb-3 col-md-6">
-                          <label class="form-label">RUC</label>
-                          <input type="text" class="form-control" id="ruc" name="ruc" required>
-                      </div>
-                      <div class="mb-3 col-md-6">
-                        <label class="form-label">Direccion</label>
-                        <input type="text" class="form-control" id="direccion" name="direccion">
-                      </div>
-                      <div class="mb-3 col-md-6">
-                        <label class="form-label">Teléfono</label>
-                        <input type="text" class="form-control" id="telefono" name="telefono" required>
-                      </div>
-                      <div class="mb-3 col-md-6">
-                        <label class="form-label">WhatsApp</label>
-                        <input type="text" class="form-control" id="telefonows" name="telefonows" required>
-                      </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="mb-3 col-md-6">
-                        <label class="form-label">Correo</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
-                    </div>
-                    <div class="mb-3 col-md-6">
-                        <label class="form-label">Nacimiento</label>
-                        <input type="date" class="form-control" id="fechanac" name="fechanac">
-                    </div>
-                    <div class="mb-3 col-md-6">
-                      <label class="form-label">Contacto</label>
-                      <input type="text" class="form-control" id="contacto" name="contacto">
-                    </div>
-                    <div class="mb-3 col-md-6">
-                      <label class="form-label">Teléfono Contacto</label>
-                      <input type="text" class="form-control" id="telefonoct" name="telefonoct">
-                    </div>
-                </div>
-                  
-                  <button type="submit" class="btn btn-primary">Crear Cliente</button>
-              </form>
+    <div class="card-header">
+      <h4 class="card-title">Crear Cliente</h4>
+    </div>
+    <div class="card-body">
+      <div class="basic-form">
+        <form action="/clientes/create" method="POST">
+          <div class="row">
+            <div type="hidden" id="idcli" value="0"></div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Tipo Cliente</label>
+              <select id="tipo" name="tipo" class="default-select form-control wide">
+                <option value="1">Natural</option>
+                <option value="2">Empresa RUC</option>
+              </select>
+            </div>
           </div>
+          <div id="divpersona" class="row">
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Tipo Documento</label>
+              <select id="idDoc" name="idDoc" class="default-select form-control wide">
+                <% documentos.forEach(documento=> { %>
+                  <option value="<%= documento.id %>">
+                    <%= documento.nombre %>
+                  </option>
+                  <% }); %>
+              </select>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Documento Nro</label>
+              <input type="text" class="form-control" id="documento" name="documento">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Nombres</label>
+              <input type="text" class="form-control" id="nombre" name="nombre">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Apellidos</label>
+              <input type="text" class="form-control" id="apellido" name="apellido">
+            </div>
+          </div>
+          <div id="divempresa" class="row">
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Razón Social</label>
+              <input type="text" class="form-control" id="razonsocial" name="razonsocial">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label">RUC</label>
+              <input type="text" class="form-control" id="ruc" name="ruc">
+            </div>
+          </div>
+          <div class="row">
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Direccion</label>
+              <input type="text" class="form-control" id="direccion" name="direccion" required>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Teléfono</label>
+              <input type="text" class="form-control" id="telefono" name="telefono" required>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label">WhatsApp</label>
+              <input type="text" class="form-control" id="telefonows" name="telefonows" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Correo</label>
+              <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Nacimiento</label>
+              <input type="date" class="form-control" id="fechanac" name="fechanac">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Contacto</label>
+              <input type="text" class="form-control" id="contacto" name="contacto">
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Teléfono Contacto</label>
+              <input type="text" class="form-control" id="telefonoct" name="telefonoct">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Crear Cliente</button>
+        </form>
       </div>
+    </div>
   </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- sweetalert -->
+<script src="/theme/vendor/sweetalert2/dist/sweetalert2.min.js"></script>
+<script src="/theme/js/plugins-init/sweetalert.init.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/public/js/cliente.js"></script>

@@ -1,8 +1,8 @@
 const db = require('../config/db');  // Si tienes un archivo de configuración para la DB
 
 class Tablas {
-    static Categorias(callback) {
-      db.query("SELECT * FROM categorias", (err, results) => {
+    static Categorias(idcia, callback) {
+      db.query("SELECT * FROM categorias where idcia=?",[idcia], (err, results) => {
         if (err) {
           return callback(err);
         }
@@ -10,8 +10,8 @@ class Tablas {
       });
     }
 
-    static Marcas(callback) {
-        db.query("SELECT * FROM marcas", (err, results) => {
+    static Marcas(idcia, callback) {
+        db.query("SELECT * FROM marcas where idcia=?",[idcia], (err, results) => {
           if (err) {
             return callback(err);
           }

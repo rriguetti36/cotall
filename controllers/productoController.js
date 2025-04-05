@@ -22,7 +22,7 @@ exports.createProductoForm = async (req, res) => {
   try {
     console.log(res.locals.idcia);
     const categorias = await new Promise((resolve, reject) => {
-      Tablas.Categorias((err, categorias) => {
+      Tablas.Categorias(res.locals.idcia,(err, categorias) => {
         if (err) {
           reject("Error al obtener categorias");
         } else {
@@ -34,7 +34,7 @@ exports.createProductoForm = async (req, res) => {
 
     // Obtener marcas
     const marcas = await new Promise((resolve, reject) => {
-      Tablas.Marcas((err, marcas) => {
+      Tablas.Marcas(res.locals.idcia, (err, marcas) => {
         if (err) {
           reject("Error al obtener marcas");
         } else {
@@ -165,7 +165,7 @@ exports.editProductoForm = async (req, res) => {
 
 
     const categorias = await new Promise((resolve, reject) => {
-      Tablas.Categorias((err, categorias) => {
+      Tablas.Categorias(res.locals.idcia,(err, categorias) => {
         if (err) {
           reject("Error al obtener categorias");
         } else {
@@ -177,7 +177,7 @@ exports.editProductoForm = async (req, res) => {
 
     // Obtener marcas
     const marcas = await new Promise((resolve, reject) => {
-      Tablas.Marcas((err, marcas) => {
+      Tablas.Marcas(res.locals.idcia, (err, marcas) => {
         if (err) {
           reject("Error al obtener marcas");
         } else {

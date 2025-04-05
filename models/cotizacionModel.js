@@ -21,7 +21,7 @@ class Cotizacion {
     }
 
     static buscaAllCli(id,callback) {
-        db.query("select id, ifnull(razonsocial, CONCAT(nombre,apellido)) nombre from clientes where idcia=?", [id], (err, results) => {
+        db.query("select id, case when razonsocial = '' then CONCAT(nombre,apellido) else razonsocial end nombre from clientes where idcia=?", [id], (err, results) => {
           if (err) {
             return callback(err);
           }
@@ -133,6 +133,17 @@ class Cotizacion {
             callback(null, results);
           }
         });
+    }
+
+    static crearstatus(data, callback) {
+      console.log(data);
+      db.query("INSERT INTO estados_cot SET ?", data, (err, results) => {
+        if (err) {
+          console.log(err);
+          return callback(err);
+        }
+        callback(null, results);
+      });
     }
 
     static obtieneCotIdPDF(id, callback){

@@ -3,7 +3,7 @@ const db = require('../config/db');  // Si tienes un archivo de configuración p
 
 class Cliente {
   static getAll(idcia, callback) {
-    db.query("SELECT * FROM clientes where idcia = ?", [idcia], (err, results) => {
+    db.query("SELECT id, case when razonsocial = '' then CONCAT(nombre,apellido) else razonsocial end razonsocial, ruc, email, telefono, telefonows FROM clientes where idcia=?", [idcia], (err, results) => {
       if (err) {
         return callback(err);
       }
