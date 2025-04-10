@@ -36,7 +36,8 @@
       try {
         console.log(1);
         const response = await fetch(icalUrl, {
-          'mode': 'no cors',
+          'mode': 'cors',
+          'method': 'GET',
           'headers': {
             'Access-Control-Allow-Origin': '*',
           }
