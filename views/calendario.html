@@ -19,13 +19,19 @@
   <script>
     window.addEventListener("message", async function (event) {
       const icalUrl = event.data && event.data.icalUrl;
+      console.log(icalUrl);
       if (!icalUrl) return;
 
       try {
+        console.log(1);
         const response = await fetch(icalUrl);
+        console.log(2);
         const icalText = await response.text();
+        console.log(3);
         const jcalData = ICAL.parse(icalText);
+        console.log(4);
         const comp = new ICAL.Component(jcalData);
+        console.log(5);
         const events = comp.getAllSubcomponents("vevent");
 
         const calendarEvents = events.map(event => {
