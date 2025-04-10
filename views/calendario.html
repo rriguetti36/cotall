@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Calendario</title>
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.css" rel="stylesheet" />
+  <style>
+    body { font-family: sans-serif; margin: 0; padding: 0; }
+    #calendar { max-width: 900px; margin: 0 auto; padding: 20px; }
+  </style>
+</head>
+<body>
+  <div id="calendar"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ical.js@1.4.0/build/ical.min.js"></script>
+
+  <script>
+    window.addEventListener("message", async function (event) {
+      const icalUrl = event.data && event.data.icalUrl;
+      if (!icalUrl) return;
+
+      try {
+        const response = await fetch(icalUrl);
+        const icalText = await response.text();
+        const jcalData = ICAL.parse(icalText);
+        const comp = new ICAL.Component(jcalData);
+        const events = comp.getAllSubcomponents("vevent");
+
+        const calendarEvents = events.map(event => {
+          const e = new ICAL.Event(event);
+          return {
+            title: e.summary,
+            start: e.startDate.toJSDate(),
+            end: e.endDate.toJSDate()
+          };
+        });
+
+        const calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
+          initialView: 'dayGridMonth',
+          events: calendarEvents,
+          height: "auto"
+        });
+
+        calendar.render();
+      } catch (err) {
+        document.body.innerHTML = "<p>Error cargando calendario. Verifica que el enlace sea válido.</p>";
+        console.error("❌ Error al cargar el .ics:", err);
+      }
+    });
+  </script>
+</body>
+</html>
