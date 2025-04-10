@@ -1,14 +1,25 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8" />
   <title>Calendario</title>
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.css" rel="stylesheet" />
   <style>
-    body { font-family: sans-serif; margin: 0; padding: 0; }
-    #calendar { max-width: 900px; margin: 0 auto; padding: 20px; }
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    #calendar {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
   </style>
 </head>
+
 <body>
   aqui si existe un html
   <div id="calendar"></div>
@@ -24,7 +35,12 @@
 
       try {
         console.log(1);
-        const response = await fetch(icalUrl);
+        const response = await fetch(icalUrl, {
+          'mode': 'no cors',
+          'headers': {
+            'Access-Control-Allow-Origin': '*',
+          }
+        });
         console.log(2);
         const icalText = await response.text();
         console.log(3);
@@ -57,4 +73,5 @@
     });
   </script>
 </body>
+
 </html>
