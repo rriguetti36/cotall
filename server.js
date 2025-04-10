@@ -99,6 +99,11 @@ app.get('/', (req, res) => {
   res.render('login', { layout: 'layouts/layoutLog', errorMessage: null });  // Renderiza la vista 'login.ejs'
 });
 
+app.get('/calendario', (req, res) => {
+  //console.log('App funcionando');
+  res.sendFile(path.join(__dirname, './views/calendario.html'));
+});
+
 app.get('/registro', (req, res) => {
   res.render('usuarios/registro', { layout: 'layouts/layoutLog', mensaje: '' });  // Renderiza la vista 'login.ejs'
 });
