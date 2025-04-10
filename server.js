@@ -30,7 +30,13 @@ app.use(cookieParser()); // Usar cookie-parser para procesar las cookies
 app.use(express.json()); // Para manejar los datos JSON
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors()); // Habilitar CORS si es necesario
+
+const corsOptions = {
+  origin: '*',
+  Credentials:true,
+  optionSuccessStatus:200,
+}
+app.use(cors(corsOptions)); // Habilitar CORS si es necesario
 app.use(express.urlencoded({ extended: true })); // Para manejar datos de formularios HTML
 
 // Configuración de multer para la carga de imágenes
