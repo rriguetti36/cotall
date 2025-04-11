@@ -32,10 +32,11 @@
       const icalUrl = event.data && event.data.icalUrl;
       console.log(icalUrl);
       if (!icalUrl) return;
+      const myProxyUrl = "https://cotall-edbb51592c54.herokuapp.com/proxy-ics?url=" + encodeURIComponent(icalUrl);
 
       try {
         console.log(1);
-        const response = await fetch(icalUrl, {
+        const response = await fetch(myProxyUrl, {
           'mode': 'cors',
           'method': 'GET',
           'headers': {
