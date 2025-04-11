@@ -105,11 +105,6 @@ app.get('/', (req, res) => {
   res.render('login', { layout: 'layouts/layoutLog', errorMessage: null });  // Renderiza la vista 'login.ejs'
 });
 
-app.get('/calendario', (req, res) => {
-  //console.log('App funcionando');
-  res.sendFile(path.join(__dirname, './views/calendario.html'));
-});
-
 app.get('/registro', (req, res) => {
   res.render('usuarios/registro', { layout: 'layouts/layoutLog', mensaje: '' });  // Renderiza la vista 'login.ejs'
 });
@@ -155,7 +150,31 @@ app.get('/logout', (req, res) => {
   res.redirect('/');  // Redirigir a la página de login
 });
 
+//esto es para abrir calendario extreno de un cliente no es parte del proyecto//
+app.get('/calendario', (req, res) => {
+  //console.log('App funcionando');
+  res.sendFile(path.join(__dirname, './views/calendario.html'));
+});
+
+app.get('/proxy-ics', async (req, res) => {
+  const icalUrl = req.query.url;
+
+  if (!icalUrl) {
+    return res.status(400).send('Falta parámetro url');
+  }
+
+  try {
+    const response = await fetch(icalUrl);
+    const data = await response.text();
+    res.set('Content-Type', 'text/calendar');
+    res.send(data);
+  } catch (err) {
+    console.error('❌ Error al pedir .ics:', err);
+    res.status(500).send('Error al obtener el archivo ICS');
+  }
+});
+
 // Iniciar el servidor
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`Servidor corriendo en puerto:${PORT}`);
 });
