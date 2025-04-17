@@ -47,6 +47,9 @@ exports.getAllUser = (req, res) => {
   //console.log('compañia:' + res.locals.idcia);
   //const { idcia } = res.locals.idcia;
   console.log(res.locals.idcia);
+  if (!req.session.user) {
+    return res.redirect("/");
+  }
   Usuario.getAll(res.locals.idcia, (err, users) => {
     if (err) {
       console.error("Error al obtener usuarios " + err);
@@ -57,6 +60,9 @@ exports.getAllUser = (req, res) => {
 };
 
 exports.createUserForm = (req, res) => {
+  if (!req.session.user) {
+    return res.redirect("/");
+  }
   Tablas.perfiles((err, perfiles) => {
     if (err) {
       return res.status(500).send("Error al obtener perfil");

@@ -10,8 +10,6 @@ $(document).ready(function () {
         $(this).select();  // Selecciona todo el contenido del input
     });
 
-    // $("#smartwizard").css("height", "800px");
-
     let cotizaciodet = [];
     // let productos = [];
 
@@ -53,13 +51,6 @@ $(document).ready(function () {
         var importe = precio * cantidad
         $("#subtotal").val(importe.toFixed(2));
     });
-
-    // $("#preciocot").change(function () {
-    //     var cantidad = $(this).val();
-    //     var precio = $("#preciocot").val();
-    //     var importe = precio * cantidad
-    //     $("#subtotal").val(importe.toFixed(2));
-    // });
 
     $('#agregarProducto').click(function () {
         // Recoger los valores de los inputs
@@ -162,6 +153,36 @@ $(document).ready(function () {
             }
         });
     });
+
+    $('.cambiar-estado').click(function () {
+        const id = $(this).data('id');
+        const nuevoEstado = $(this).data('estado');
+  
+        $.ajax({
+          url: '/cotizaciones/updateEstado',
+          method: 'POST',
+          data: { id: id, est: nuevoEstado },
+          success: function (response) {
+            if (response.success) {
+              // Actualiza el texto del badge
+            //   let texto = '';
+            //   if (nuevoEstado === 2) texto = 'Aprobada';
+            //   else if (nuevoEstado === 3) texto = 'Rechazada';
+            //   else texto = 'Otro';
+  
+            //   $(`.estado-label[data-id="${id}"]`).text(texto);
+            //   alert('Estado actualizado correctamente');
+                window.location.href = '/cotizaciones';
+            } else {
+              alert('No se pudo actualizar el estado');
+            }
+          },
+          error: function () {
+            alert('Error en la solicitud AJAX');
+          }
+        });
+      });
+
 });
 
 // Función para actualizar los subtotales y el total de la cotización

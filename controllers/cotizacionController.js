@@ -88,10 +88,6 @@ exports.crearCotizacion = (req, res) => {
   if (!req.session.user) {
     return res.redirect("/");
   }
-  // Aquí puedes guardar la cotización en la base de datos o procesarla como desees
-  //console.log("cotizacion:", cotizacion);
-  //console.log("cotizaciodet:", cotizaciodet);
-
   Cotizacion.obtienecontador(res.locals.idcia, (err, result) => {
     //console.log(result);
     let numero = result;
@@ -113,7 +109,6 @@ exports.crearCotizacion = (req, res) => {
         // Obtener el id de la cotización recién creada
         const idCotizacion = results.insertId;
         const productos = req.body.cotizaciodet; // Supongamos que `productos` es un array con el detalle
-        //registra el status
         //Cotizacion.crearstatus()
         productos.forEach(producto => {
           const detalleCotizacion = {
@@ -133,8 +128,17 @@ exports.crearCotizacion = (req, res) => {
             if (err) {
               console.log(err)
               return err;
+            } else {
+              //registra el status
+              const fechaActual = new Date();
+              const estado = 1;
+              Cotizacion.crearstatus(idCotizacion, estado, fechaActual, (err, results) => {
+                if (err) {
+                  console.log(err)
+                  return err; //res.status(500).send('Error al crear la cotización');
+                }
+              })
             }
-
           });
         });
         console.log(idCotizacion);
@@ -206,10 +210,10 @@ exports.generaPDFDownload = async (req, res) => {
     const html = await ejs.renderFile(path.join(__dirname, '../views/cotizaciones/cotizacionPlantilla.ejs'), { data, datadet });
     await page.setContent(html);
 
-    const pdfBuffer = await page.pdf({ 
-      format: 'A4', 
+    const pdfBuffer = await page.pdf({
+      format: 'A4',
       printBackground: true,
-      landscape: false, 
+      landscape: false,
       margin: {               // Márgenes personalizados
         top: '10mm',
         right: '10mm',
@@ -227,9 +231,24 @@ exports.generaPDFDownload = async (req, res) => {
       'Content-Disposition': 'inline; filename=documento.pdf',
     });
 
-    res.send(pdfBuffer); 
+    res.send(pdfBuffer);
   } catch (error) {
     console.error('Error generando PDF:', error);
     res.status(500).send('Error al generar el PDF');
   }
 };
+
+exports.updatestatus = (req, res) => {
+  const { id, est } = req.body;
+  const fechaActual = new Date();
+  console.log(id);
+  console.log(est);
+  Cotizacion.crearstatus(id, est, fechaActual, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ success: false, message: 'Error al actualizar el estado' });
+    }
+    res.json({ success: true, message: 'Estado actualizado correctamente' });
+  })
+};
+

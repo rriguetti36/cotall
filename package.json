@@ -12,6 +12,7 @@
   "type": "commonjs",
   "description": "",
   "dependencies": {
+    "basic-ftp": "^5.0.5",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
     "chrome-aws-lambda": "^10.1.0",

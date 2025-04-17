@@ -5,8 +5,12 @@ const companias = require('../models/companiaModel');
 const variante = require('../models/varianteModel');
 const atributo = require('../models/atributoModel');
 const atributovalor = require('../models/atributovalorModel');
+const uploadToHostinger = require('../util/uploadToHostinger');
 
 exports.getAllPoductos = (req, res) => {
+  if (!req.session.user) {
+    return res.redirect("/");
+  }
   console.log(res.locals.idcia);
   Producto.getAll(res.locals.idcia, (err, productos) => {
     if (err) {
@@ -21,8 +25,11 @@ exports.getAllPoductos = (req, res) => {
 exports.createProductoForm = async (req, res) => {
   try {
     console.log(res.locals.idcia);
+    if (!req.session.user) {
+      return res.redirect("/");
+    }
     const categorias = await new Promise((resolve, reject) => {
-      Tablas.Categorias(res.locals.idcia,(err, categorias) => {
+      Tablas.Categorias(res.locals.idcia, (err, categorias) => {
         if (err) {
           reject("Error al obtener categorias");
         } else {
@@ -117,20 +124,41 @@ exports.createProductoForm = async (req, res) => {
 };
 
 exports.createProducto = (req, res) => {
-  /* if (!req.file) {
-    return res.status(400).send('No se subió ninguna imagen');
-  } */
-  //console.log('req.body:' + req.body.codigo);
+  //sube la imagen al server externo FTP
+  //const datosFormulario = req.body;
+  //console.log(datosFormulario);
+  const archivoSubido = req.file;
+
+  // if (!archivoSubido) {
+  //   console.log("⚠️ No se subió ninguna imagen");
+  //   return res.status(400).send("Debe seleccionar una imagen");
+  // }
+
+  // console.log("📝 Datos:", datosFormulario);
+  // console.log("📁 Imagen:", archivoSubido);
+
+
+
   const { codigo, nombre, descripcion, idcat, idmar, tipo, precio, preciorebaja, stock, impuesto, imagen, idcia } = req.body;
 
   let imagenUrl = null;
-
   // Si se ha subido una nueva imagen, almacenamos la URL
-  if (req.file) {
-    //console.log('entra en req.file' + req.file.filename);
-    imagenUrl = '/uploads/' + req.file.filename;
+  try {
+    if (archivoSubido) {
+      const nombreArchivo = archivoSubido.filename;
+      const rutaLocal = archivoSubido.path;
+      console.log("nombreArchivo:", nombreArchivo);
+      console.log("rutaLocal:", rutaLocal);
+      console.log("guarda el archivo en FTP hostinger:");
+      uploadToHostinger(rutaLocal, nombreArchivo, res.locals.idcia);
+      imagenUrl = 'https:/industrialcentereirl.com/uploads/' + res.locals.idcia + '/' + req.file.filename;
+    }
+    else {
+      imagenUrl = null;
+    }
+  } catch (error) {
+    res.status(500).send("❌ Error subiendo la imagen.");
   }
-
   const producto = { codigo, nombre, descripcion, idcat, idmar, tipo, precio, preciorebaja, stock, impuesto, imagen, idcia };
 
   producto.imagen = imagenUrl;
@@ -161,11 +189,11 @@ exports.editProductoForm = async (req, res) => {
         }
       });
     });
-    //console.log(producto);
+    console.log(producto);
 
 
     const categorias = await new Promise((resolve, reject) => {
-      Tablas.Categorias(res.locals.idcia,(err, categorias) => {
+      Tablas.Categorias(res.locals.idcia, (err, categorias) => {
         if (err) {
           reject("Error al obtener categorias");
         } else {
@@ -260,20 +288,42 @@ exports.editProductoForm = async (req, res) => {
 };
 
 exports.editProducto = (req, res) => {
-  //console.log('req.params.id: '+ req.params.id);
   const { id } = req.params;
-  //console.log('req.body: '+ req.body);
+
+  //const datosFormulario = req.body;
+  //console.log(datosFormulario);
+  const archivoSubido = req.file;
+
+  // if (!archivoSubido) {
+  //   console.log("⚠️ No se subió ninguna imagen");
+  //   return res.status(400).send("Debe seleccionar una imagen");
+  // }
+
+  // console.log("📝 Datos:", datosFormulario);
+  // console.log("📁 Imagen:", archivoSubido);
+
+
+
+  //res.send("Producto editado y archivo recibido");
+
   const { codigo, nombre, descripcion, idcat, idmar, tipo, precio, preciorebaja, stock, impuesto, imagen, imagen_u } = req.body;
-
   let imagenUrl = null;
-
   // Si se ha subido una nueva imagen, almacenamos la URL
-  if (req.file) {
-    console.log('entra en req.file' + req.file.filename);
-    imagenUrl = '/uploads/' + req.file.filename;
-  }
-  else {
-    imagenUrl = imagen_u;
+  try {
+    if (archivoSubido) {
+      const nombreArchivo = archivoSubido.filename;
+      const rutaLocal = archivoSubido.path;
+      console.log("nombreArchivo:", nombreArchivo);
+      console.log("rutaLocal:", rutaLocal);
+      console.log("guarda el archivo en FTP hostinger:");
+      uploadToHostinger(rutaLocal, nombreArchivo, res.locals.idcia);
+      imagenUrl = 'https:/industrialcentereirl.com/uploads/' + res.locals.idcia + '/' + req.file.filename;
+    }
+    else {
+      imagenUrl = imagen_u;
+    }
+  } catch (error) {
+    res.status(500).send("❌ Error subiendo la imagen.");
   }
 
   const producto = { codigo, nombre, descripcion, idcat, idmar, tipo, precio, preciorebaja, stock, impuesto, imagen };

@@ -5,11 +5,12 @@ class Cotizacion {
     static getAll(idcia, callback) {
 
         var query = `SELECT a.id, numcot, ifnull(c.razonsocial, concat(c.nombre, ' ', c.apellido)) cliente,c.email, c.telefonows, 
-                    fecha, b.nombre monedas, totcot 
+                    fecha, b.nombre monedas, totcot, d.estado
                     FROM cotizacion_cab a 
                     join monedas b on a.idmon=b.id
                     join clientes c on a.idcli=c.id
-                    where a.idcia = ?
+                    join estados_cot d on a.id=d.idcot
+                    where a.idcia = ? and d.id = (select max(id) from estados_cot where idcot=a.id)
                     order by a.id desc`
 
         db.query(query, [idcia], (err, results) => {
@@ -135,9 +136,8 @@ class Cotizacion {
         });
     }
 
-    static crearstatus(data, callback) {
-      console.log(data);
-      db.query("INSERT INTO estados_cot SET ?", data, (err, results) => {
+    static crearstatus(idcot, idest, fecha, callback) {
+      db.query("INSERT INTO estados_cot (idcot,estado,fechareg) values (?,?,?)",[idcot,idest,fecha], (err, results) => {
         if (err) {
           console.log(err);
           return callback(err);

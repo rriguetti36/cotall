@@ -1,5 +1,6 @@
 const companias = require('../models/companiaModel');
 const Tablas = require('../models/tablasModel');
+const uploadToHostinger = require('../util/uploadToHostinger');
 
 exports.createCompaniaForm = (req, res) => {
   const userid = req.cookies.userid;
@@ -89,9 +90,10 @@ exports.createCompania = (req, res) => {
 };
 
 exports.editCompaniaForm = (req, res) => {
-  //const { id } = req.params;
-  //const id  = res.locals.idcia;
   console.log(res.locals.idcia);
+  if (!req.session.user) {
+    return res.redirect("/");
+  }
   companias.getById(res.locals.idcia, (err, compania) => {
     if (err) {
       return res.status(500).send("Error al obtener el compania");
@@ -164,19 +166,31 @@ exports.editCompaniaForm = (req, res) => {
 
 exports.editCompania = (req, res) => {
   //const { id } = req.params;
-  console.log("entra en editCompania");
-  console.log(req.body);
   console.log(res.locals.idcia);
+  console.log("entra en editCompania");
+
+  const archivoSubido = req.file;
+
   const { nombre, documento, telefono, direccion, email, imagen, indimp, mtoimp, idrub, cantusu, tipovig, diasvig, indprd, indser, estado, pagweb, facebook, instagram, linkedid, ctabco, imagen_u } = req.body;
   let imagenUrl = null;
 
-  // Si se ha subido una nueva imagen, almacenamos la URL
-  if (req.file) {
-    console.log('entra en req.file' + req.file.filename);
-    imagenUrl = '/uploads/' + req.file.filename;
-  }
-  else {
-    imagenUrl = imagen_u;
+  // Si se ha subido una nueva imagen, almacenamos la URL}
+  try {
+    if (archivoSubido) {
+      console.log("📁 Imagen:", archivoSubido);
+      const nombreArchivo = archivoSubido.filename;
+      const rutaLocal = archivoSubido.path;
+      console.log("nombreArchivo:", nombreArchivo);
+      console.log("rutaLocal:", rutaLocal);
+      console.log("guarda el archivo en FTP hostinger:");
+      uploadToHostinger(rutaLocal, nombreArchivo, res.locals.idcia);
+      imagenUrl = 'https:/industrialcentereirl.com/uploads/' + res.locals.idcia + '/' + req.file.filename;
+    }
+    else {
+      imagenUrl = imagen_u;
+    }
+  } catch (error) {
+    res.status(500).send("❌ Error subiendo la imagen.");
   }
 
   const compania = { nombre, documento, telefono, direccion, email, imagen, indimp, mtoimp, idrub, cantusu, tipovig, diasvig, indprd, indser, estado, pagweb, facebook, instagram, linkedid, ctabco };
@@ -213,7 +227,7 @@ exports.editCompania = (req, res) => {
       const fechaT = new Date(fechafin);
       fechafin = fechaT.toISOString().split('T')[0];
       console.log(fechafin);
-      console.log(compania);
+
       Tablas.rubros((err, rubros) => {
         if (err) {
           return res.status(500).send("Error al obtener rubros");
@@ -230,7 +244,7 @@ exports.editCompania = (req, res) => {
             { id: 'M', nombre: "Mensual" },
             { id: 'P', nombre: "Prueba 30 días" }
           ];
-
+          console.log(compania);
           res.render('configura/edit', { compania, tipovig, rubros, rubrosh, fechavigform: fechaini, fechavigTerform: fechafin, mensaje: "Guardado correctamente", tipo: "success" });
         });
       });

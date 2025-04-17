@@ -6,6 +6,9 @@ exports.getAllClientes = (req, res) => {
   //console.log('compañia:' + res.locals.idcia);
   //const { idcia } = res.locals.idcia;
   console.log(res.locals.idcia);
+  if (!req.session.user) {
+    return res.redirect("/");
+  }
   Cliente.getAll(res.locals.idcia, (err, clientes) => {
     if (err) {
       console.error("Error al obtener clientes " + err);
@@ -16,6 +19,9 @@ exports.getAllClientes = (req, res) => {
 };
 
 exports.createClienteForm = (req, res) => {
+  if (!req.session.user) {
+    return res.redirect("/");
+  }
   Tablas.Documentos((err, documentos) => {
     if (err) {
       return res.status(500).send("Error al obtener categorias");

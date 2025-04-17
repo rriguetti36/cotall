@@ -153,11 +153,12 @@
                         <div class="mb-3 col-md-6">
                             <label class="form-label">Logo de tu empresa</label>
                             <div id="lightgallery" class="row">
-                                <a href="<%= compania.imagen %>" data-exthumbimage="<%= compania.imagen %>"
-                                    data-src="<%= compania.imagen %>" class="col-lg-3 col-md-6 mb-4">
-                                    <img src="<%= compania.imagen %>" class="rounded" alt="" style="width:100%;">
+                                <a href="<%= compania.imagen %>?v=<%= Date.now() %>" data-exthumbimage="<%= compania.imagen %>?v=<%= Date.now() %>"
+                                    data-src="<%= compania.imagen %>?v=<%= Date.now() %>" class="col-lg-3 col-md-6 mb-4">
+                                    <img src="<%= compania.imagen %>?v=<%= Date.now() %>" class="rounded" alt="" style="width:100%;">
                                 </a>
                             </div>
+                            <img src="<%= compania.imagen %>?v=<%= Date.now() %>" class="rounded" alt="" style="width:100%;">
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label">Cuentas y Bancos</label>
@@ -241,11 +242,13 @@
 
     // Si hay un mensaje, mostrarlo con SweetAlert
     if (mensaje) {
-        Swal.fire({
-            title: tipo === "success" ? "Éxito" : "Error",
-            text: mensaje,
-            icon: tipo,
-            confirmButtonText: "OK"
-        });
+        // Swal.fire({
+        //     title: tipo === "success" ? "Éxito" : "Error",
+        //     text: mensaje,
+        //     icon: tipo,
+        //     confirmButtonText: "OK"
+        // });
+        window.location.href = '/compania/edit';
     }
+
 </script>

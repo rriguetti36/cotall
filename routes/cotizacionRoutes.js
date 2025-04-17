@@ -9,4 +9,5 @@ router.post("/create", cotizacionController.crearCotizacion);
 router.get("/producto/:id", cotizacionController.obtieneProductoID);
 router.get("/generaPDFprevia", cotizacionController.generaPDFprevia);
 router.get("/generaPDFdownload/:id", cotizacionController.generaPDFDownload);
+router.post("/updateEstado", cotizacionController.updatestatus);
 module.exports = router;

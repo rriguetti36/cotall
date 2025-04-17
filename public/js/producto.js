@@ -4,9 +4,22 @@ $(document).ready(function () {
   const $divpreciorebaja = $('#divpreciorebaja');
   const $divstock = $('#divstock');
 
+  // Asegurarse de que la visibilidad esté bien al cargar
+  if ($('#tipo').val() == '2') {
+    $tabVariantes.show();
+    $divprecio.hide();
+    $divpreciorebaja.hide();
+    $divstock.hide();
+  }else {
+    $tabVariantes.hide();
+    $divprecio.show();
+    $divpreciorebaja.show();
+    $divstock.show();
+  }
+
   //Cambiar la visibilidad del tab cuando cambia la selección
   $('#tipo').change(function () {
-    if ($(this).val() === '2') {
+    if ($('#tipo').val() == '2') {
       $tabVariantes.show();
       $divprecio.hide();
       $divpreciorebaja.hide();
@@ -19,13 +32,6 @@ $(document).ready(function () {
     }
   });
 
-  // Asegurarse de que la visibilidad esté bien al cargar
-  if ($('#tipo').val() == '2') {
-    $tabVariantes.show();
-    $divprecio.hide();
-    $divpreciorebaja.hide();
-    $divstock.hide();
-  }
 
   $('#contenedor-actualiza').hide();
 
@@ -33,12 +39,15 @@ $(document).ready(function () {
   $('#frmProductos').submit(function (e) {
     e.preventDefault();
 
-    const formData = $(this).serialize();
-
+    //const formData = $(this).serialize();
+    const form = this;
+    const formData = new FormData(form); //$(this).serialize();
     $.ajax({
       url: '/productos/create',
       method: 'POST',
       data: formData,
+      contentType: false,
+      processData: false,
       success: function (data) {
         const msgDiv = $('#mensaje');
         //msgDiv.removeClass('d-none alert-success alert-danger');
@@ -77,13 +86,16 @@ $(document).ready(function () {
   $('#frmProductosedita').submit(function (e) {
     e.preventDefault();
 
-    const formData = $(this).serialize();
+    const form = this;
+    const formData = new FormData(form); //$(this).serialize();
     const id = $('#idProducto').val();
 
     $.ajax({
       url: `/productos/edit/${id}`,
       method: 'POST',
       data: formData,
+      contentType: false,
+      processData: false,
       success: function (data) {
         const msgDiv = $('#mensaje');
         //msgDiv.removeClass('d-none alert-success alert-danger');
@@ -175,7 +187,7 @@ $(document).ready(function () {
 
   function obtieneVariante(id) {
     const idprod = $('#idProducto').val();
-  
+
     $.ajax({
       url: `/productos/${idprod}/${id}/getvarianteprod`,
       method: 'GET',
@@ -224,7 +236,7 @@ $(document).ready(function () {
     $('#panelVariantes').removeClass('show');
   });
 
-  $('.select-text').on('click', function() {
+  $('.select-text').on('click', function () {
     $(this).select();  // Selecciona todo el contenido del input
   });
 

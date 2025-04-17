@@ -70,8 +70,29 @@
                     <%= cotizacion.monedas %>
                       <!-- <p class="mb-0 text-500">Moneda referencial</p> -->
                   </td>
-                  <td class="py-2 text-end"><span class="badge badge-success badge-sm light">Completed<span
-                        class="ms-1 fa fa-check"></span></span>
+                  <td class="py-2 text-end">
+                    <% if (cotizacion.estado === 1) { %>
+                      <span class="badge badge-primary badge-sm light">Pedido Cotizado
+                        <span class="ms-1 fa fa-check"></span>
+                      </span>
+                    <% } else if (cotizacion.estado === 2) { %>
+                      <span class="badge badge-warning badge-sm light">Aprobado 
+                        <span class="ms-1 fa fa-check"></span>
+                      </span>
+                    <% } else if (cotizacion.estado === 3) { %>
+                      <span class="badge badge-success badge-sm light">Venta Confirmada
+                        <span class="ms-1 fa fa-check"></span>
+                      </span>
+                    <% } else if (cotizacion.estado === 4) { %>
+                      <span class="badge badge-danger badge-sm light">Rechazado
+                        <span class="ms-1 fa fa-check"></span>
+                      </span>
+                    <% } else { %>
+                      <span class="badge badge-dark badge-sm light">Anulada
+                        <span class="ms-1 fa fa-check"></span>
+                      </span>
+                    <% } %>
+                    
                   </td>
                   <td class="py-2 text-end">
                     <%= cotizacion.totcot %>
@@ -91,10 +112,25 @@
                           </svg></span></button>
                       <div class="dropdown-menu dropdown-menu-end border py-0" aria-labelledby="order-dropdown-0">
                         <div class="py-2">
-                          <a class="dropdown-item" href="javascript:void(0);">Completado</a>
-                          <a class="dropdown-item" href="javascript:void(0);">En proceso...</a>
-                          <a class="dropdown-item" href="javascript:void(0);">En espera</a>
-                          <a class="dropdown-item" href="javascript:void(0);">Pendiente</a>
+                          <% if (cotizacion.estado === 1) { %>
+                            <a href="" class="dropdown-item cambiar-estado" data-id="<%= cotizacion.id %>" data-estado="2">Aprobado</a>
+                            <a href="" class="dropdown-item cambiar-estado" data-id="<%= cotizacion.id %>" data-estado="3">Venta Confirmada</a>
+                            <a href="" class="dropdown-item cambiar-estado" data-id="<%= cotizacion.id %>" data-estado="4">Rechazado</a>
+                            <a href="" class="dropdown-item cambiar-estado" data-id="<%= cotizacion.id %>" data-estado="5">Anulada</a>
+                          <% } else if (cotizacion.estado === 2) { %>
+                            <a href="" class="dropdown-item cambiar-estado" data-id="<%= cotizacion.id %>" data-estado="3">Venta Confirmada</a>
+                            <a href="" class="dropdown-item cambiar-estado" data-id="<%= cotizacion.id %>" data-estado="4">Rechazado</a>
+                            <a href="" class="dropdown-item cambiar-estado" data-id="<%= cotizacion.id %>" data-estado="5">Anulada</a>
+                          <% } else if (cotizacion.estado === 3) { %>
+                            <a href="" class="dropdown-item cambiar-estado" data-id="<%= cotizacion.id %>" data-estado="4">Rechazado</a>
+                            <a href="" class="dropdown-item cambiar-estado" data-id="<%= cotizacion.id %>" data-estado="5">Anulada</a>
+                          <% } else if (cotizacion.estado === 4) { %>
+                            
+                          <% } else { %>
+                            <a href="" class="dropdown-item cambiar-estado" data-id="<%= cotizacion.id %>" data-estado="5">Anulada</a>
+                          <% } %>
+
+                          
                           <div class="dropdown-divider"></div><a class="dropdown-item text-danger"
                             href="/clientes/delete/<%= cotizacion.id %>">Eliminar</a>
                         </div>
@@ -111,3 +147,9 @@
     </div>
   </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- sweetalert -->
+<script src="/theme/vendor/sweetalert2/dist/sweetalert2.min.js"></script>
+<script src="/theme/js/plugins-init/sweetalert.init.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/public/js/createCot.js"></script>
