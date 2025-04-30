@@ -12,8 +12,8 @@ const puppeteer = require('puppeteer-core');
 const util = require('util');
 const moment = require('moment');
 moment.locale('es');
-const obtieneCotIdPDFAsync = util.promisify(Cotizacion.obtieneCotIdPDF);
-const obtieneCotIdPDFDetalleAsync = util.promisify(Cotizacion.obtieneCotIdPDFDetalle);
+//const obtieneCotIdPDFAsync = util.promisify(Cotizacion.obtieneCotIdPDF);
+//const obtieneCotIdPDFDetalleAsync = util.promisify(Cotizacion.obtieneCotIdPDFDetalle);
 
 exports.getAllCotizaciones = async (req, res) => {
   if (!req.session.user) {
@@ -143,13 +143,13 @@ exports.generaPDFDownload = async (req, res) => {
   const { id } = req.params;
   console.log(id);
   try {
-    const data = await obtieneCotIdPDFAsync(id);
+    const data = await Cotizacion.obtieneCotIdPDF(id);
 
     if (!data || Object.keys(data).length === 0) {
       return res.status(404).json({ error: 'Data de cotización no encontrada' });
     }
 
-    const datadet = await obtieneCotIdPDFDetalleAsync(id);
+    const datadet = await Cotizacion.obtieneCotIdPDFDetalle(id);
 
     if (!datadet || datadet.length === 0) {
       return res.status(404).json({ error: 'Detalle de cotización no encontrado' });
