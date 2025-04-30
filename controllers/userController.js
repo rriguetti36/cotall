@@ -1,138 +1,124 @@
-// /controllers/clienteController.js
 const bcrypt = require('bcryptjs');
 const Usuario = require('../models/userModel');
 const Tablas = require('../models/tablasModel');
 
-exports.createUsuario = (req, res) => {
-  const { usuario, email, password, nombres, apellidos, idper, estado } = req.body;
-  const user = { usuario, email, password, nombres, apellidos, idper, estado };
+exports.createUsuario = async (req, res) => {
+  try {
+    const { usuario, email, password, nombres, apellidos } = req.body;
+    const user = { usuario, email, password, nombres, apellidos };
 
-  Usuario.existemail(user.email, (err, results)=>{
-    console.log(user.email);
-    
-    if (err) {
-      console.error(err);
-      return res.status(500).send("Error al validar si existe email");
-    }
-    else if (results.existe>0){
-      //return res.status(500).send("Si existe email");
-      res.render('usuarios/registro', { layout: 'layouts/layoutLog', mensaje: 'Correo email ya existe como cuenta. ¡Registre otra!.' });
-    } 
-    else {
-      const saltRounds = 10;
-      bcrypt.hash(user.password, saltRounds, (err, hash) => {
-        if (err) {
-          console.error('Error generando hash:', err);
-        } else {
-          console.log('Hash generado:', hash);
-        }
-        user.idper = 2;
-        user.estado = 1;
-        user.password = hash;
-        console.log(user.password);
-        Usuario.createuser(user, (err, results) => {
-          if (err) {
-            return res.status(500).send("Error al crear el usuario");
-          }
-          const iduser = results.insertId;
-          res.cookie('userid', iduser);
-          res.redirect("/compania/registroCia");
-        });
+    const { existe } = await Usuario.existemail(user.email);
+    if (existe > 0) {
+      return res.render('usuarios/registro', {
+        layout: 'layouts/layoutLog',
+        mensaje: 'Correo email ya existe como cuenta. ¡Registre otra!.'
       });
     }
-  })
-};
 
-exports.getAllUser = (req, res) => {
-  //console.log('compañia:' + res.locals.idcia);
-  //const { idcia } = res.locals.idcia;
-  console.log(res.locals.idcia);
-  if (!req.session.user) {
-    return res.redirect("/");
-  }
-  Usuario.getAll(res.locals.idcia, (err, users) => {
-    if (err) {
-      console.error("Error al obtener usuarios " + err);
-      return res.status(500).send("Error al obtener usuarios " + err);
-    }
-    res.render("usuarios/index", { users });
-  });
-};
+    const saltRounds = 10;
+    const hash = await bcrypt.hash(user.password, saltRounds);
 
-exports.createUserForm = (req, res) => {
-  if (!req.session.user) {
-    return res.redirect("/");
-  }
-  Tablas.perfiles((err, perfiles) => {
-    if (err) {
-      return res.status(500).send("Error al obtener perfil");
-    }
-    console.log(perfiles);
-    res.render("usuarios/create", { perfiles });
-  });
-};
-
-exports.createUser = (req, res) => {
-  const { usuario, email, password, nombres, apellidos, idper, estado, idcia, telefono, code } = req.body;
-  const user = { usuario, email, password, nombres, apellidos, idper, estado, idcia, telefono, code };
-
-  user.estado = 1;
-  user.idcia = res.locals.idcia;
-  const saltRounds = 10;
-  bcrypt.hash(user.password, saltRounds, (err, hash) => {
-    if (err) {
-      console.error('Error generando hash:', err);
-    } else {
-      console.log('Hash generado:', hash);
-    }
     user.password = hash;
-    console.log(user.password);
-    Usuario.create(user, (err) => {
-      if (err) {
-        return res.status(500).send("Error al crear usuario");
-      }
-      res.redirect("/usuarios");
-    });
-  });
+    user.idper = 2;
+    user.estado = 1;
+
+    const result = await Usuario.createuser(user);
+    res.cookie('userid', result.insertId);
+    res.redirect("/compania/registroCia");
+
+  } catch (error) {
+    console.error("Error al crear usuario:", error);
+    res.status(500).send("Error al crear usuario");
+  }
 };
 
-exports.editUserForm = (req, res) => {
-  const { id } = req.params;
+exports.getAllUser = async (req, res) => {
+  try {
+    if (!req.session.user) return res.redirect("/");
 
-  Usuario.getById(id, (err, user) => {
-    if (err) {
-      return res.status(500).send("Error al obtener el usuario");
-    }
-    Tablas.perfiles((err, perfiles) => {
-      if (err) {
-        return res.status(500).send("Error al obtener perfil");
-      }
-      console.log(perfiles);
-      res.render("usuarios/edit", { user, perfiles });
-    });
-  });
+    const users = await Usuario.getAll(res.locals.idcia);
+    res.render("usuarios/index", { users });
+
+  } catch (error) {
+    console.error("Error al obtener usuarios:", error);
+    res.status(500).send("Error al obtener usuarios");
+  }
 };
 
-exports.editUser = (req, res) => {
-  const { id } = req.params;
-  const { usuario, email, password, nombres, apellidos, idper, estado, idcia, telefono } = req.body;
-  const user = { usuario, email, password, nombres, apellidos, idper, estado, idcia, telefono };
+exports.createUserForm = async (req, res) => {
+  try {
+    if (!req.session.user) return res.redirect("/");
 
-  Usuario.update(id, user, (err) => {
-    if (err) {
-      return res.status(500).send("Error al actualizar cliente");
-    }
+    const perfiles = await Tablas.perfiles();
+    res.render("usuarios/create", { perfiles });
+
+  } catch (error) {
+    console.error("Error al obtener perfil:", error);
+    res.status(500).send("Error al obtener perfil");
+  }
+};
+
+exports.createUser = async (req, res) => {
+  try {
+    const { usuario, email, password, nombres, apellidos, idper, telefono, code } = req.body;
+    const user = {
+      usuario, email, password, nombres, apellidos, idper,
+      estado: 1,
+      idcia: res.locals.idcia,
+      telefono,
+      code
+    };
+
+    const saltRounds = 10;
+    user.password = await bcrypt.hash(user.password, saltRounds);
+
+    await Usuario.create(user);
     res.redirect("/usuarios");
-  });
+
+  } catch (error) {
+    console.error("Error al crear usuario:", error);
+    res.status(500).send("Error al crear usuario");
+  }
 };
 
-exports.deleteUser = (req, res) => {
-  const { id } = req.params;
+exports.editUserForm = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-  Usuario.delete(id, (err) => {
-    if (err) {
-      return res.status(500).send("Error al eliminar cliente");
-    }
+    const user = await Usuario.getById(id);
+    const perfiles = await Tablas.perfiles();
+
+    res.render("usuarios/edit", { user, perfiles });
+
+  } catch (error) {
+    console.error("Error al obtener usuario:", error);
+    res.status(500).send("Error al obtener usuario");
+  }
+};
+
+exports.editUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { usuario, email, password, nombres, apellidos, idper, estado, idcia, telefono } = req.body;
+
+    const user = { usuario, email, password, nombres, apellidos, idper, estado, idcia, telefono };
+    await Usuario.update(id, user);
     res.redirect("/usuarios");
-  });
+
+  } catch (error) {
+    console.error("Error al actualizar usuario:", error);
+    res.status(500).send("Error al actualizar usuario");
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Usuario.delete(id);
+    res.redirect("/usuarios");
+
+  } catch (error) {
+    console.error("Error al eliminar usuario:", error);
+    res.status(500).send("Error al eliminar usuario");
+  }
 };

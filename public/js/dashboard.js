@@ -1,9 +1,19 @@
 $(document).ready(function () {
-    horizontalBarChart();
+  // $.ajax({
+  //   url: '/dashboard/clientestop',
+  //   method: 'GET',
+  //   success: function(response) {
+  //     const clientes = response.clientestop;
+  //     alert(clientes);
+  //     console.log('Clientes por AJAX:', clientes);
+  //   }
+  // });
+  //   horizontalBarChart();
 });
 
 function horizontalBarChart(){
     //Horizontal bar chart
+    
 
     new Chartist.Bar('#horizontal-bar-clientes', {
             labels: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'],

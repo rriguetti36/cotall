@@ -1,29 +1,29 @@
-const db = require('../config/db');  // Si tienes un archivo de configuración para la DB
+const db = require('../config/db');  // Asegúrate de usar mysql2 y db.promise()
 
 class CotizacionDet {
-  static crearDetalleCotizacion(detalle, callback) {
+  static async crearDetalleCotizacion(detalle) {
     const query = `
-          INSERT INTO cotizacion_det (idcot, tipo, idprod, cantidad, idumd, preciounit, subtotal, impuesto, total, observacion)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `;
-    db.query(query, [
-      detalle.idcot,
-      detalle.tipo,
-      detalle.idprod,
-      detalle.cantidad,
-      detalle.idumd,
-      detalle.preciounit,
-      detalle.subtotal,
-      detalle.impuesto,
-      detalle.total,
-      detalle.observacion
-    ], (err, results) => {
-      if (err) {
-        callback(err, null);
-      } else {
-        callback(null, results);
-      }
-    });
+      INSERT INTO cotizacion_det (idcot, tipo, idprod, cantidad, idumd, preciounit, subtotal, impuesto, total, observacion)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    try {
+      const [results] = await db.query(query, [
+        detalle.idcot,
+        detalle.tipo,
+        detalle.idprod,
+        detalle.cantidad,
+        detalle.idumd,
+        detalle.preciounit,
+        detalle.subtotal,
+        detalle.impuesto,
+        detalle.total,
+        detalle.observacion
+      ]);
+      return results;
+    } catch (err) {
+      throw err;
+    }
   }
 }
 

@@ -1,110 +1,101 @@
-const db = require('../config/db');  // Si tienes un archivo de configuración para la DB
+const db = require('../config/db');
 
-class users {
-  static getUserByIdcookie(userId, callback) {
+class Users {
+  static async getUserByIdcookie(userId) {
     const query = 'SELECT * FROM users WHERE id = ?';
-    db.query(query, [userId], (err, result) => {
-
-      if (err) {
-        console.error('Error en la consulta:', err);
-        return callback(err, null);  // Si hay un error, lo pasamos al callback
+    try {
+      const [rows] = await db.query(query, [userId]);
+      if (rows.length > 0) {
+        console.log("result:", rows[0]);
+        return rows[0];
       }
-      if (result.length > 0) {
-        console.log("result:" + result[0]);
-        return result[0]; // Devolvemos el primer resultado
-      } else {
-        return callback(null, null); // Si no hay resultado, devolvemos null
-      }
-    });
+      return null;
+    } catch (err) {
+      console.error('Error en la consulta:', err);
+      throw err;
+    }
   }
 
-  static getNombreUsuario(userId, callback) {
-    console.log(userId.iduser);
+  static async getNombreUsuario(userId) {
     const query = `SELECT concat(nombres,' ', apellidos) comercial FROM users WHERE id = ?`;
-    console.log(query);
-    db.query(query, [userId.iduser], (err, results) => {
-      if (err) {
-        return callback(err);
-      }
-      //console.log("result:" + result[0]);
-      callback(null, results[0]);
-    });
+    try {
+      const [rows] = await db.query(query, [userId.iduser]);
+      return rows[0];
+    } catch (err) {
+      throw err;
+    }
   }
 
-  static createuser(usuario, callback) {
-    console.log(usuario);
-    db.query("INSERT INTO users SET ?", usuario, (err, results) => {
-      if (err) {
-        //console.log(err);
-        return callback(err);
-      }
-      callback(null, results);
-    });
+  static async createuser(usuario) {
+    try {
+      const [result] = await db.query("INSERT INTO users SET ?", usuario);
+      return result;
+    } catch (err) {
+      throw err;
+    }
   }
 
-  static getAll(idcia, callback) {
-    db.query(`SELECT a.id, usuario, email, password, concat(nombres,'', apellidos) nombres, b.nombre perfil, estado, idcia, telefono 
-              FROM users a
-              join perfiles b on a.idper=b.id
-              where a.idcia=?`, [idcia], (err, results) => {
-      if (err) {
-        return callback(err);
-      }
-      callback(null, results);
-    });
+  static async getAll(idcia) {
+    const query = `
+      SELECT a.id, usuario, email, password, concat(nombres,' ', apellidos) nombres,
+             b.nombre perfil, estado, idcia, telefono 
+      FROM users a
+      JOIN perfiles b ON a.idper = b.id
+      WHERE a.idcia = ?
+    `;
+    try {
+      const [rows] = await db.query(query, [idcia]);
+      return rows;
+    } catch (err) {
+      throw err;
+    }
   }
 
-  static getById(id, callback) {
-    db.query("SELECT * FROM users WHERE id = ?", [id], (err, results) => {
-      if (err) {
-        return callback(err);
-      }
-      callback(null, results[0]);
-    });
+  static async getById(id) {
+    try {
+      const [rows] = await db.query("SELECT * FROM users WHERE id = ?", [id]);
+      return rows[0];
+    } catch (err) {
+      throw err;
+    }
   }
 
-  static create(user, callback) {
-    //console.log(user);
-    db.query("INSERT INTO users SET ?", user, (err, results) => {
-      if (err) {
-        console.log(err);
-        return callback(err);
-      }
-      callback(null, results);
-    });
+  static async create(user) {
+    try {
+      const [result] = await db.query("INSERT INTO users SET ?", user);
+      return result;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
   }
 
-  static update(id, user, callback) {
-    db.query(
-      "UPDATE users SET ? WHERE id = ?",
-      [user, id],
-      (err, results) => {
-        if (err) {
-          return callback(err);
-        }
-        callback(null, results);
-      }
-    );
+  static async update(id, user) {
+    try {
+      const [result] = await db.query("UPDATE users SET ? WHERE id = ?", [user, id]);
+      return result;
+    } catch (err) {
+      throw err;
+    }
   }
 
-  static delete(id, callback) {
-    db.query("DELETE FROM users WHERE id = ?", [id], (err, results) => {
-      if (err) {
-        return callback(err);
-      }
-      callback(null, results);
-    });
+  static async delete(id) {
+    try {
+      const [result] = await db.query("DELETE FROM users WHERE id = ?", [id]);
+      return result;
+    } catch (err) {
+      throw err;
+    }
   }
 
-  static existemail(email, callback) {
-    db.query("select count(*) existe from users WHERE email = ?", [email], (err, results) => {
-      if (err) {
-        return callback(err);
-      }
-      callback(null, results[0]);
-    });
+  static async existemail(email) {
+    try {
+      const [rows] = await db.query("SELECT COUNT(*) AS existe FROM users WHERE email = ?", [email]);
+      return rows[0];
+    } catch (err) {
+      throw err;
+    }
   }
 }
 
-
-module.exports = users;
+module.exports = Users;

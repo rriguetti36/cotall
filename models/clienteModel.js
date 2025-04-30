@@ -1,56 +1,70 @@
-// /models/clienteModel.js
-const db = require('../config/db');  // Si tienes un archivo de configuración para la DB
+const db = require('../config/db');
 
 class Cliente {
-  static getAll(idcia, callback) {
-    db.query("SELECT id, case when razonsocial = '' then CONCAT(nombre,apellido) else razonsocial end razonsocial, ruc, email, telefono, telefonows FROM clientes where idcia=?", [idcia], (err, results) => {
-      if (err) {
-        return callback(err);
-      }
-      callback(null, results);
-    });
+  static async getAll(idcia) {
+    try {
+      const [results] = await db.query(
+        `SELECT id, 
+         CASE 
+           WHEN razonsocial = '' THEN CONCAT(nombre, apellido) 
+           ELSE razonsocial 
+         END AS razonsocial, 
+         ruc, email, telefono, telefonows 
+         FROM clientes WHERE idcia = ?`,
+        [idcia]
+      );
+      return results;
+    } catch (err) {
+      throw err;
+    }
   }
 
-  static getById(id, callback) {
-    db.query("SELECT * FROM clientes WHERE id = ?", [id], (err, results) => {
-      if (err) {
-        return callback(err);
-      }
-      callback(null, results[0]);
-    });
+  static async getById(id) {
+    try {
+      const [results] = await db.query(
+        "SELECT * FROM clientes WHERE id = ?",
+        [id]
+      );
+      return results[0];
+    } catch (err) {
+      throw err;
+    }
   }
 
-  static create(cliente, callback) {
-    console.log(cliente);
-    db.query("INSERT INTO clientes SET ?", cliente, (err, results) => {
-      if (err) {
-        console.log(err);
-        return callback(err);
-      }
-      callback(null, results);
-    });
+  static async create(cliente) {
+    try {
+      const [results] = await db.query(
+        "INSERT INTO clientes SET ?",
+        cliente
+      );
+      return results;
+    } catch (err) {
+      throw err;
+    }
   }
 
-  static update(id, cliente, callback) {
-    db.query(
-      "UPDATE clientes SET ? WHERE id = ?",
-      [cliente, id],
-      (err, results) => {
-        if (err) {
-          return callback(err);
-        }
-        callback(null, results);
-      }
-    );
+  static async update(id, cliente) {
+    try {
+      const [results] = await db.query(
+        "UPDATE clientes SET ? WHERE id = ?",
+        [cliente, id]
+      );
+      return results;
+    } catch (err) {
+      throw err;
+    }
   }
 
-  static delete(id, callback) {
-    db.query("DELETE FROM clientes WHERE id = ?", [id], (err, results) => {
-      if (err) {
-        return callback(err);
-      }
-      callback(null, results);
-    });
+  static async delete(id) {
+    try {
+      const [results] = await db.query(
+        "DELETE FROM clientes WHERE id = ?",
+        [id]
+      );
+      return results;
+    } catch (err) {
+      throw err;
+    }
   }
 }
 

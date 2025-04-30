@@ -1,79 +1,60 @@
 // /models/clienteModel.js
-const db = require('../config/db');  // Si tienes un archivo de configuración para la DB
+const db = require('../config/db');  // Asegurate de usar .promise() aquí
 
 class Compania {
-  //   static getAll(idcia, callback) {
-  //     db.query("SELECT * FROM clientes where idcia = ?", [idcia], (err, results) => {
-  //       if (err) {
-  //         return callback(err);
-  //       }
-  //       callback(null, results);
-  //     });
-  //   }
-
-  static getById(id, callback) {
-    console.log(id);
-    db.query("SELECT * FROM compania WHERE id = ?", [id], (err, results) => {
-      if (err) {
-        return callback(err);
-      }
-      callback(null, results[0]);
-    });
-  }
-
-  static create(compania, callback) {
-    console.log(compania);
-    db.query("INSERT INTO compania SET ?", compania, (err, results) => {
-      if (err) {
-        console.log(err);
-        return callback(err);
-      }
-      callback(null, results);
-    });
-  }
-
-  static update(id, compania, callback) {
-    db.query(
-      "UPDATE compania SET ? WHERE id = ?",
-      [compania, id],
-      (err, results) => {
-        if (err) {
-          return callback(err);
-        }
-        callback(null, results);
-      }
-    );
-  }
-
-  static updateUserCia(idcia,iduser, callback) {
-    db.query(
-      "UPDATE users SET idcia=? WHERE id = ?",
-      [idcia, iduser],
-      (err, results) => {
-        if (err) {
-          return callback(err);
-        }
-        callback(null, results);
-      }
-    );
-  }
-
-  static existeCia(nombrerz, callback) {
-      db.query("SELECT count(*) FROM compania WHERE trim(nombre)=?", [nombrerz], (err, results) => {
-        if (err) {
-          return callback(err);
-        }
-        callback(null, results[0]);
-      });
+  static async getById(id) {
+    try {
+      const [results] = await db.query("SELECT * FROM compania WHERE id = ?", [id]);
+      return results[0];
+    } catch (err) {
+      throw err;
     }
-  //   static delete(id, callback) {
-  //     db.query("DELETE FROM clientes WHERE id = ?", [id], (err, results) => {
-  //       if (err) {
-  //         return callback(err);
-  //       }
-  //       callback(null, results);
-  //     });
-  //   }
+  }
+
+  static async create(compania) {
+    try {
+      const [results] = await db.query("INSERT INTO compania SET ?", [compania]);
+      return results;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async update(id, compania) {
+    try {
+      const [results] = await db.query("UPDATE compania SET ? WHERE id = ?", [compania, id]);
+      return results;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async updateUserCia(idcia, iduser) {
+    try {
+      const [results] = await db.query("UPDATE users SET idcia=? WHERE id = ?", [idcia, iduser]);
+      return results;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async existeCia(nombrerz) {
+    try {
+      const [results] = await db.query("SELECT COUNT(*) AS total FROM compania WHERE TRIM(nombre) = ?", [nombrerz]);
+      return results[0];
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async delete(id) {
+    try {
+      const [results] = await db.query("DELETE FROM clientes WHERE id = ?", [id]);
+      return results;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 
 module.exports = Compania;

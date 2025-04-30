@@ -15,176 +15,133 @@ moment.locale('es');
 const obtieneCotIdPDFAsync = util.promisify(Cotizacion.obtieneCotIdPDF);
 const obtieneCotIdPDFDetalleAsync = util.promisify(Cotizacion.obtieneCotIdPDFDetalle);
 
-exports.getAllCotizaciones = (req, res) => {
+exports.getAllCotizaciones = async (req, res) => {
   if (!req.session.user) {
     return res.redirect("/");
   }
-  Cotizacion.getAll(res.locals.idcia, (err, cotizaciones) => {
-    if (err) {
-      return res.status(500).send("Error al obtener cotizaciones");
-    }
-    cotizaciones = cotizaciones.map(c => {
-      return {
-        ...c,
-        fechaFormateada: moment(c.fecha).format('LL') // Ej: "4 de abril de 2025"
-      };
-    });
-    console.log(cotizaciones);
-    res.render("cotizaciones/index", { cotizaciones });
-  });
+
+  try {
+    const cotizaciones = await Cotizacion.getAll(res.locals.idcia);
+
+    const cotizacionesFormateadas = cotizaciones.map(c => ({
+      ...c,
+      fechaFormateada: moment(c.fecha).format('LL')
+    }));
+
+    res.render("cotizaciones/index", { cotizaciones: cotizacionesFormateadas });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error al obtener cotizaciones");
+  }
 };
 
-exports.creaCotizacionForm = (req, res) => {
+exports.creaCotizacionForm = async (req, res) => {
   if (!req.session.user) {
     return res.redirect("/");
   }
-  Cotizacion.buscaAllCli(res.locals.idcia, (err, clientes) => {
-    if (err) {
-      return res.status(500).send("Error al obtener Clientes");
-    }
-    Tablas.Monedas((err, monedas) => {
-      if (err) {
-        return res.status(500).send("Error al obtener Monedas");
-      }
-      Tablas.Formapago((err, formapagos) => {
-        if (err) {
-          return res.status(500).send("Error al obtener Forma Pagos");
-        }
-        Tablas.Formaentrega((err, formaentregas) => {
-          if (err) {
-            return res.status(500).send("Error al obtener Forma Entrega");
-          }
-          Cotizacion.buscaAllProd(res.locals.idcia, (err, productos) => {
-            if (err) {
-              return res.status(500).send("Error al obtener productos individual");
-            }
-            Tablas.umedidas((err, medidas) => {
-              if (err) {
-                return res.status(500).send("Error al obtener Unidad de medida");
-              }
-              Usuario.getNombreUsuario(req.session.user, (err, asesor) => {
-                if (err) {
-                  return res.status(500).send("Error al obtener asesor comercial");
-                }
-                console.log(JSON.stringify(asesor, null, 2));
 
-                res.render("cotizaciones/createCot", { clientes, monedas, formapagos, formaentregas, productos, medidas, idcia: res.locals.idcia, asesor });
-              })
-            });
-          });
-        });
-      });
+  try {
+    const clientes = await Cotizacion.buscaAllCli(res.locals.idcia);
+    const monedas = await Tablas.Monedas();
+    const formapagos = await Tablas.Formapago();
+    const formaentregas = await Tablas.Formaentrega();
+    const productos = await Cotizacion.buscaAllProd(res.locals.idcia);
+    const medidas = await Tablas.umedidas();
+    const asesor = await Usuario.getNombreUsuario(req.session.user);
+
+    res.render("cotizaciones/createCot", {
+      clientes,
+      monedas,
+      formapagos,
+      formaentregas,
+      productos,
+      medidas,
+      idcia: res.locals.idcia,
+      asesor
     });
-  });
-
-  //res.render('cotizaciones/createCot', { title: 'Crear Cotización' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error al cargar formulario de cotización");
+  }
 };
 
-exports.crearCotizacion = (req, res) => {
-
-  let cotizacab;
-  const { cotizacion, cotizaciodet } = req.body;
-
+exports.crearCotizacion = async (req, res) => {
   if (!req.session.user) {
     return res.redirect("/");
   }
-  Cotizacion.obtienecontador(res.locals.idcia, (err, result) => {
-    //console.log(result);
-    let numero = result;
-    let numeroFormateado = numero.toString().padStart(8, '0');
-    console.log(numeroFormateado);
-    const numcot = "CT" + numeroFormateado
-    //console.log(numcot);
+
+  try {
+    const { cotizacion, cotizaciodet } = req.body;
+    const numero = await Cotizacion.obtienecontador(res.locals.idcia);
+    const numeroFormateado = numero.toString().padStart(8, '0');
+    const numcot = "CT" + numeroFormateado;
+
     cotizacion.numcot = numcot;
     cotizacion.iduser = res.locals.iduser;
-    console.log("cotizacion ACT:", cotizacion);
-    console.log("iduser:", res.locals.iduser);
 
-    Cotizacion.crearCotizacion(cotizacion, (err, results) => {
-      if (err) {
-        console.log(err)
-        return err; //res.status(500).send('Error al crear la cotización');
-      }
-      else {
-        // Obtener el id de la cotización recién creada
-        const idCotizacion = results.insertId;
-        const productos = req.body.cotizaciodet; // Supongamos que `productos` es un array con el detalle
-        //Cotizacion.crearstatus()
-        productos.forEach(producto => {
-          const detalleCotizacion = {
-            idcot: idCotizacion,
-            tipo: producto.tipo,
-            idprod: producto.idprod,
-            cantidad: producto.cantidad,
-            idumd: producto.idumd,
-            preciounit: producto.preciounit,
-            subtotal: producto.subtotal,
-            impuesto: 0,
-            total: 0,
-            observacion: producto.observacion,
-          };
-          // Crear el detalle de la cotización
-          CotizacionDet.crearDetalleCotizacion(detalleCotizacion, (err, result) => {
-            if (err) {
-              console.log(err)
-              return err;
-            } else {
-              //registra el status
-              const fechaActual = new Date();
-              const estado = 1;
-              Cotizacion.crearstatus(idCotizacion, estado, fechaActual, (err, results) => {
-                if (err) {
-                  console.log(err)
-                  return err; //res.status(500).send('Error al crear la cotización');
-                }
-              })
-            }
-          });
-        });
-        console.log(idCotizacion);
-      }
-    });
-    //
+    const result = await Cotizacion.crearCotizacion(cotizacion);
+    const idCotizacion = result.insertId;
+
+    const fechaActual = new Date();
+    const estado = 1;
+
+    // Guardar cada producto
+    for (const producto of cotizaciodet) {
+      const detalleCotizacion = {
+        idcot: idCotizacion,
+        tipo: producto.tipo,
+        idprod: producto.idprod,
+        cantidad: producto.cantidad,
+        idumd: producto.idumd,
+        preciounit: producto.preciounit,
+        subtotal: producto.subtotal,
+        impuesto: 0,
+        total: 0,
+        observacion: producto.observacion,
+      };
+      await CotizacionDet.crearDetalleCotizacion(detalleCotizacion);
+    }
+
+    await Cotizacion.crearstatus(idCotizacion, estado, fechaActual);
     res.send("ok");
-    //res.redirect('https://www.nueva-url.com');
-
-  });
+  } catch (err) {
+    console.error("Error al crear cotización:", err);
+    res.status(500).send("Error al crear la cotización");
+  }
 };
 
-exports.obtieneProductoID = (req, res) => {
+exports.obtieneProductoID = async (req, res) => {
+  if (!req.session.user) {
+    return res.redirect("/");
+  }
+
   const { id } = req.params;
 
-  Cotizacion.obtieneProdTipo(id, (err, tipoProd) => {
-    if (err) {
-      return res.status(500).send("Error al obtener producto");
-    }
-    else {
-      const tipo = (tipoProd && tipoProd.tipo) || 1;
-      console.log(tipo);
-      Cotizacion.obtieneProdId(tipo, id, (err, producto) => {
-        //console.log(Object.keys(producto).length);
-        if (err) {
-          return res.status(500).send("Error al obtener producto");
-        }
-        else {
-          if (Object.keys(producto).length > 0) {
-            res.json(producto);  // Devuelve el primer resultado como JSON
-          } else {
-            res.status(404).json({ error: 'Producto no encontrado' });
-          }
-        }
-      });
-    }
-  });
-}
+  try {
+    const tipoProd = await Cotizacion.obtieneProdTipo(id);
+    const tipo = (tipoProd && tipoProd.tipo) || 1;
+    console.log(tipo);
 
-exports.generaPDFprevia = (req, res) => {
-  res.render("cotizaciones/cotizacionPDF");
-}
+    const producto = await Cotizacion.obtieneProdId(tipo, id);
+
+    if (producto && Object.keys(producto).length > 0) {
+      res.json(producto);
+    } else {
+      res.status(404).json({ error: 'Producto no encontrado' });
+    }
+  } catch (err) {
+    console.error("Error al obtener producto:", err);
+    res.status(500).send("Error al obtener producto");
+  }
+};
+
+// exports.generaPDFprevia = (req, res) => {
+//   res.render("cotizaciones/cotizacionPDF");
+// }
 
 exports.generaPDFDownload = async (req, res) => {
   const { id } = req.params;
-
+  console.log(id);
   try {
     const data = await obtieneCotIdPDFAsync(id);
 
@@ -238,17 +195,17 @@ exports.generaPDFDownload = async (req, res) => {
   }
 };
 
-exports.updatestatus = (req, res) => {
+exports.updatestatus = async (req, res) => {
   const { id, est } = req.body;
   const fechaActual = new Date();
-  console.log(id);
-  console.log(est);
-  Cotizacion.crearstatus(id, est, fechaActual, (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ success: false, message: 'Error al actualizar el estado' });
-    }
+
+  try {
+    await Cotizacion.crearstatus(id, est, fechaActual);
     res.json({ success: true, message: 'Estado actualizado correctamente' });
-  })
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Error al actualizar el estado' });
+  }
 };
+
 

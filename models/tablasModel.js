@@ -1,109 +1,116 @@
-const db = require('../config/db');  // Si tienes un archivo de configuración para la DB
+const db = require('../config/db'); // Asegúrate de que sea mysql2 o mysql2/promise
 
 class Tablas {
-    static Categorias(idcia, callback) {
-      db.query("SELECT * FROM categorias where idcia=?",[idcia], (err, results) => {
-        if (err) {
-          return callback(err);
-        }
-        callback(null, results);
-      });
+  static async Categorias(idcia) {
+    try {
+      const [results] = await db.query("SELECT * FROM categorias WHERE idcia = ?", [idcia]);
+      return results;
+    } catch (err) {
+      throw err;
     }
-
-    static Marcas(idcia, callback) {
-        db.query("SELECT * FROM marcas where idcia=?",[idcia], (err, results) => {
-          if (err) {
-            return callback(err);
-          }
-          callback(null, results);
-        });
-      }
-
-    static Documentos(callback) {
-        db.query("SELECT * FROM documentos", (err, results) => {
-          if (err) {
-            return callback(err);
-          }
-          callback(null, results);
-        });
-      }
-
-      static Monedas(callback) {
-        db.query("SELECT * FROM monedas", (err, results) => {
-          if (err) {
-            return callback(err);
-          }
-          callback(null, results);
-        });
-      }
-
-      static Formapago(callback) {
-        db.query("SELECT * FROM formapagos", (err, results) => {
-          if (err) {
-            return callback(err);
-          }
-          callback(null, results);
-        });
-      }
-
-      static Formaentrega(callback) {
-        db.query("SELECT * FROM formaentregas", (err, results) => {
-          if (err) {
-            return callback(err);
-          }
-          callback(null, results);
-        });
-      }
-
-      static umedidas(callback) {
-        db.query("SELECT * FROM umedidas", (err, results) => {
-          if (err) {
-            return callback(err);
-          }
-          callback(null, results);
-        });
-      }
-
-      static rubros(callback) {
-        db.query("SELECT * FROM rubros where idpadre=0", (err, results) => {
-          if (err) {
-            return callback(err);
-          }
-          callback(null, results);
-        });
-      }
-
-      static rubrosh(callback) {
-        db.query("SELECT * FROM rubros where idpadre<>0 order by id", (err, results) => {
-          if (err) {
-            return callback(err);
-          }
-          callback(null, results);
-        });
-      }
-
-      static perfiles(callback) {
-        db.query("SELECT * FROM perfiles where id<>1", (err, results) => {
-          if (err) {
-            return callback(err);
-          }
-          callback(null, results);
-        });
-      }
-
-      static activo(idcia, callback) {
-        db.query(`select a.* from activo a
-                    left join (SELECT case when indprd=1 then 1 else 0 end indprd, case when indser=1 then 2 else 0 end indser FROM compania where id=?) b on 
-                    a.activo=indser or a.activo=indprd
-                    where b.indprd is not null`, [idcia], (err, results) => {
-          if (err) {
-            return callback(err);
-          }
-          callback(null, results);
-        });
-      }
-
   }
-  
-  module.exports = Tablas;
-  
+
+  static async Marcas(idcia) {
+    try {
+      const [results] = await db.query("SELECT * FROM marcas WHERE idcia = ?", [idcia]);
+      return results;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async Documentos() {
+    try {
+      const [results] = await db.query("SELECT * FROM documentos");
+      return results;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async Monedas() {
+    try {
+      const [results] = await db.query("SELECT * FROM monedas");
+      return results;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async Formapago() {
+    try {
+      const [results] = await db.query("SELECT * FROM formapagos");
+      return results;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async Formaentrega() {
+    try {
+      const [results] = await db.query("SELECT * FROM formaentregas");
+      return results;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async umedidas() {
+    try {
+      const [results] = await db.query("SELECT * FROM umedidas");
+      return results;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async rubros() {
+    try {
+      const [results] = await db.query("SELECT * FROM rubros WHERE idpadre = 0");
+      return results;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async rubrosh() {
+    try {
+      const [results] = await db.query("SELECT * FROM rubros WHERE idpadre <> 0 ORDER BY id");
+      return results;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async perfiles() {
+    try {
+      const [results] = await db.query("SELECT * FROM perfiles WHERE id <> 1");
+      return results;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async activo(idcia) {
+    try {
+      const [results] = await db.query(`
+        SELECT a.* 
+        FROM activo a
+        LEFT JOIN (
+          SELECT 
+            CASE WHEN indprd = 1 THEN 1 ELSE 0 END AS indprd,
+            CASE WHEN indser = 1 THEN 2 ELSE 0 END AS indser 
+          FROM compania 
+          WHERE id = ?
+        ) b 
+        ON a.activo = indser OR a.activo = indprd
+        WHERE b.indprd IS NOT NULL
+      `, [idcia]);
+      return results;
+    } catch (err) {
+      throw err;
+    }
+  }
+}
+
+module.exports = Tablas;

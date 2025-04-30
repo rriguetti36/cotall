@@ -13,11 +13,13 @@ const companiaRoutes = require('./routes/companiaRoutes');
 const userRoutes = require('./routes/userRoutes');
 const licenseRoutes = require('./routes/licenseRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
 const layouts = require('express-ejs-layouts');
 const User = require('./models/userModel'); // Reemplaza con tu modelo de usuario
 const session = require("express-session");
 const multer = require('multer');
-
+const DashboardModel = require('./models/dashboardModel');
+const dashboard = new DashboardModel();
 
 // Configurar las variables de entorno
 dotenv.config();
@@ -98,6 +100,7 @@ app.use("/compania", companiaRoutes(upload));
 app.use("/usuarios", userRoutes);
 app.use('/licencias', licenseRoutes);
 app.use('/admin', adminRoutes);
+app.use('/dashboard', dashboardRoutes);
 
 // Ruta para la página de inicio (login)
 app.get('/', (req, res) => {
@@ -113,7 +116,7 @@ app.get('/registroCia', (req, res) => {
   res.render('usuarios/registroCia', { layout: 'layouts/layoutLog' });  // Renderiza la vista 'login.ejs'
 });
 
-app.get('/index', (req, res) => {
+app.get('/index', async (req, res) => {
 
   const token = req.cookies.auth_token;
   console.log("token:" + token);
@@ -132,8 +135,14 @@ app.get('/index', (req, res) => {
     //console.log("req.session.usuario" + req.session.usuario);
     //console.log("local.res.user" + user);
     // Renderizar el dashboard y pasar la información del usuario
-    res.render('index', { user });
-    //res.render('index');
+    const cotizaciones = await dashboard.cotizacionesdatos(res.locals.idcia);
+    const productos = await dashboard.productostop(res.locals.idcia);
+    //const asesores = await dashboard.asesores(res.locals.idcia);
+    //const clientes = await dashboard.clientestop(res.locals.idcia);
+    console.log("cotizaciones" + cotizaciones);
+    console.log("productos" + productos);
+    //res.render('index', { user, cotizaciones, productos, asesores, clientes });
+    res.render('index', { user, cotizaciones, productos });
   } catch (err) {
     console.error('Error al verificar el token:', err);
     return res.redirect('/');  // Si el token es inválido, redirigir al login

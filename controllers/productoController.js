@@ -7,171 +7,88 @@ const atributo = require('../models/atributoModel');
 const atributovalor = require('../models/atributovalorModel');
 const uploadToHostinger = require('../util/uploadToHostinger');
 
-exports.getAllPoductos = (req, res) => {
+exports.getAllPoductos = async (req, res) => {
   if (!req.session.user) {
     return res.redirect("/");
   }
   console.log(res.locals.idcia);
-  Producto.getAll(res.locals.idcia, (err, productos) => {
-    if (err) {
-      console.error("Error al obtener productos " + err);
-      return res.status(500).send("Error al obtener Productos " + err);
-    }
-
-    res.render("Productos/index", { productos });
-  });
+  const productos = await Producto.getAll(res.locals.idcia);
+  if (!productos || productos.length === 0) {
+    return res.status(404).json({ message: 'No se encontraron productos para esta compañía' });
+  }
+  res.render("Productos/index", { productos });
 };
 
 exports.createProductoForm = async (req, res) => {
-  try {
-    console.log(res.locals.idcia);
-    if (!req.session.user) {
-      return res.redirect("/");
-    }
-    const categorias = await new Promise((resolve, reject) => {
-      Tablas.Categorias(res.locals.idcia, (err, categorias) => {
-        if (err) {
-          reject("Error al obtener categorias");
-        } else {
-          resolve(categorias);
-        }
-      });
-    });
-    //console.log(categorias);
-
-    // Obtener marcas
-    const marcas = await new Promise((resolve, reject) => {
-      Tablas.Marcas(res.locals.idcia, (err, marcas) => {
-        if (err) {
-          reject("Error al obtener marcas");
-        } else {
-          resolve(marcas);
-        }
-      });
-    });
-    //console.log(marcas);
-
-    // Obtener compañia
-    const activos = await new Promise((resolve, reject) => {
-      Tablas.activo(res.locals.idcia, (err, activos) => {
-        if (err) {
-          reject("Error al obtener activos");
-        } else {
-          resolve(activos);
-        }
-      });
-    });
-    //console.log(activos);
-
-    // Obtener compañia
-    const compania = await new Promise((resolve, reject) => {
-      companias.getById(res.locals.idcia, (err, compania) => {
-        if (err) {
-          reject("Error al obtener compañia");
-        } else {
-          resolve(compania);
-        }
-      });
-    });
-
-    // Obtener variantes
-    /* const variantes = await new Promise((resolve, reject) => {
-      variante.getByproductoId(0, (err, variantes) => {
-        if (err) {
-          reject("Error al obtener variantes del producto");
-        } else {
-          resolve(variantes);
-        }
-      });
-    }); */
-
-    // Obtener atributos
-    /* const atributos = await new Promise((resolve, reject) => {
-      atributo.getAll(res.locals.idcia, (err, atributos) => {
-        if (err) {
-          reject("Error al obtener atributos");
-        } else {
-          resolve(atributos);
-        }
-      });
-    }); */
-
-    // Obtener valores de atributos
-    /*   const atributosConValores = await Promise.all(atributos.map(async (attr) => {
-        const values = await new Promise((resolve, reject) => {
-          atributovalor.getAllatr(attr.id, (err, values) => {
-            if (err) {
-              reject(`Error al obtener valores para el atributo ID ${attr.id}`);
-            } else {
-              resolve(values);
-            }
-          });
-        });
-  
-        // Asignar los valores al atributo
-        attr.values = values;
-        return attr;
-      })); */
-
-    //console.log(atributosConValores);
-
-    res.render("Productos/Create", { categorias, marcas, activos, compania });
+  console.log(res.locals.idcia);
+  if (!req.session.user) {
+    return res.redirect("/");
   }
-  catch (error) {
-    console.error("Error en el proceso:", error);
-    res.status(500).send("Hubo un error al procesar los datos.");
+  const categorias = await Tablas.Categorias(res.locals.idcia);
+  if (!categorias || categorias.length === 0) {
+    return res.status(404).json({ message: 'No se encontraron categorias para esta compañía' + this.name });
   }
+  const marcas = await Tablas.Marcas(res.locals.idcia);
+  if (!marcas || marcas.length === 0) {
+    return res.status(404).json({ message: 'No se encontraron marcas para esta compañía' + this.name });
+  }
+  const activos = await Tablas.activo(res.locals.idcia);
+  if (!activos || activos.length === 0) {
+    return res.status(404).json({ message: 'No se encontraron activos para esta compañía' + this.name });
+  }
+  const compania = await companias.getById(res.locals.idcia);
+  if (!compania || compania.length === 0) {
+    return res.status(404).json({ message: 'No se encontraron datos para esta compañía' + this.name });
+  }
+  res.render("Productos/Create", { categorias, marcas, activos, compania });
 };
 
-exports.createProducto = (req, res) => {
-  //sube la imagen al server externo FTP
-  //const datosFormulario = req.body;
-  //console.log(datosFormulario);
-  const archivoSubido = req.file;
-
-  // if (!archivoSubido) {
-  //   console.log("⚠️ No se subió ninguna imagen");
-  //   return res.status(400).send("Debe seleccionar una imagen");
-  // }
-
-  // console.log("📝 Datos:", datosFormulario);
-  // console.log("📁 Imagen:", archivoSubido);
-
-
-
-  const { codigo, nombre, descripcion, idcat, idmar, tipo, precio, preciorebaja, stock, impuesto, imagen, idcia } = req.body;
-
-  let imagenUrl = null;
-  // Si se ha subido una nueva imagen, almacenamos la URL
-  try {
-    if (archivoSubido) {
-      const nombreArchivo = archivoSubido.filename;
-      const rutaLocal = archivoSubido.path;
-      console.log("nombreArchivo:", nombreArchivo);
-      console.log("rutaLocal:", rutaLocal);
-      console.log("guarda el archivo en FTP hostinger:");
-      uploadToHostinger(rutaLocal, nombreArchivo, res.locals.idcia);
-      imagenUrl = 'https:/industrialcentereirl.com/uploads/' + res.locals.idcia + '/' + req.file.filename;
-    }
-    else {
-      imagenUrl = null;
-    }
-  } catch (error) {
-    res.status(500).send("❌ Error subiendo la imagen.");
+exports.createProducto = async (req, res) => {
+  if (!req.session.user) {
+    return res.redirect("/");
   }
-  const producto = { codigo, nombre, descripcion, idcat, idmar, tipo, precio, preciorebaja, stock, impuesto, imagen, idcia };
+  try {
+    // if (!archivoSubido) {
+    //   console.log("⚠️ No se subió ninguna imagen");
+    //   return res.status(400).send("Debe seleccionar una imagen");
+    // }
 
-  producto.imagen = imagenUrl;
-  producto.idcia = res.locals.idcia;
+    // console.log("📝 Datos:", datosFormulario);
+    // console.log("📁 Imagen:", archivoSubido);
+    const archivoSubido = req.file;
+    const { codigo, nombre, descripcion, idcat, idmar, tipo, precio, preciorebaja, stock, impuesto, imagen, idcia } = req.body;
 
-  Producto.create(producto, (err, results) => {
-    if (err) {
-      return res.status(500).send("Error al crear producto");
+    let imagenUrl = null;
+    // Si se ha subido una nueva imagen, almacenamos la URL
+    try {
+      if (archivoSubido) {
+        const nombreArchivo = archivoSubido.filename;
+        const rutaLocal = archivoSubido.path;
+        console.log("nombreArchivo:", nombreArchivo);
+        console.log("rutaLocal:", rutaLocal);
+        console.log("guarda el archivo en FTP hostinger:");
+        uploadToHostinger(rutaLocal, nombreArchivo, res.locals.idcia);
+        imagenUrl = 'https:/industrialcentereirl.com/uploads/' + res.locals.idcia + '/' + req.file.filename;
+      }
+      else {
+        imagenUrl = null;
+      }
+    } catch (error) {
+      res.status(500).send("❌ Error subiendo la imagen.");
     }
-    const idprod = results.insertId;
+    const producto = { codigo, nombre, descripcion, idcat, idmar, tipo, precio, preciorebaja, stock, impuesto, imagen, idcia };
+
+    producto.imagen = imagenUrl;
+    producto.idcia = res.locals.idcia;
+
+    const resultado = await Producto.create(producto);
+    const idprod = resultado.insertId;
     return res.json({ success: true, message: 'Producto guardado exitosamente.', idprod: idprod });
-    //res.redirect("/productos");
-  });
+
+  } catch (error) {
+    console.error('Error al crear producto:', error);
+    res.status(500).json({ message: 'Error al crear producto' });
+  }
 };
 
 exports.editProductoForm = async (req, res) => {
@@ -179,105 +96,64 @@ exports.editProductoForm = async (req, res) => {
 
   try {
     //console.log(res.locals.idcia);
+    const producto = await Producto.getById(id);
+    console.log("producto: " + producto);
+    if (!producto || producto.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron producto para esta compañía' + this.name });
+    }
 
-    const producto = await new Promise((resolve, reject) => {
-      Producto.getById(id, (err, productos) => {
-        if (err) {
-          reject("Error al obtener productos");
-        } else {
-          resolve(productos);
-        }
-      });
-    });
-    console.log(producto);
+    const categorias = await Tablas.Categorias(res.locals.idcia);
+    console.log("categorias: " + categorias);
+    if (!categorias || categorias.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron categorias para esta compañía' + this.name });
+    }
 
+    const marcas = await Tablas.Marcas(res.locals.idcia);
+    console.log("marcas: " + marcas);
+    if (!marcas || marcas.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron marcas para esta compañía' + this.name });
+    }
 
-    const categorias = await new Promise((resolve, reject) => {
-      Tablas.Categorias(res.locals.idcia, (err, categorias) => {
-        if (err) {
-          reject("Error al obtener categorias");
-        } else {
-          resolve(categorias);
-        }
-      });
-    });
-    //console.log(categorias);
+    const activos = await Tablas.activo(res.locals.idcia);
+    console.log("activos: " + activos);
+    if (!activos || activos.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron activos para esta compañía' + this.name });
+    }
 
-    // Obtener marcas
-    const marcas = await new Promise((resolve, reject) => {
-      Tablas.Marcas(res.locals.idcia, (err, marcas) => {
-        if (err) {
-          reject("Error al obtener marcas");
-        } else {
-          resolve(marcas);
-        }
-      });
-    });
-    //console.log(marcas);
-
-    // Obtener compañia
-    const activos = await new Promise((resolve, reject) => {
-      Tablas.activo(res.locals.idcia, (err, activos) => {
-        if (err) {
-          reject("Error al obtener activos");
-        } else {
-          resolve(activos);
-        }
-      });
-    });
-    //console.log(activos);
-
-    // Obtener compañia
-    const compania = await new Promise((resolve, reject) => {
-      companias.getById(res.locals.idcia, (err, compania) => {
-        if (err) {
-          reject("Error al obtener compañia");
-        } else {
-          resolve(compania);
-        }
-      });
-    });
+    const compania = await companias.getById(res.locals.idcia);
+    console.log("compania: " + compania);
+    if (!compania || compania.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron datos para esta compañía' + this.name });
+    }
 
     // Obtener variantes
-    const variantes = await new Promise((resolve, reject) => {
-      variante.getByproductoId(id, (err, variantes) => {
-        if (err) {
-          reject("Error al obtener variantes del producto");
-        } else {
-          resolve(variantes);
-        }
-      });
-    });
+    const variantes = await variante.getByproductoId(id);
+    console.log("variantes: " + variantes);
+    if (!variantes || variantes.length === 0) {
+      //return res.status(404).json({ message: 'No se encontraron variante para esta producto' + this.name });
+    }
 
     // Obtener atributos
-    const atributos = await new Promise((resolve, reject) => {
-      atributo.getAll(res.locals.idcia, (err, atributos) => {
-        if (err) {
-          reject("Error al obtener atributos");
-        } else {
-          resolve(atributos);
-        }
-      });
-    });
+    const atributos = await atributo.getAll(res.locals.idcia);
+    console.log("atributos: " + atributos);
+    if (!atributos || atributos.length === 0) {
+      //return res.status(404).json({ message: 'No se encontraron atributos para esta producto' + this.name });
+    }
 
     // Obtener valores de atributos
     const atributosConValores = await Promise.all(atributos.map(async (attr) => {
-      const values = await new Promise((resolve, reject) => {
-        atributovalor.getAllatr(attr.id, (err, values) => {
-          if (err) {
-            reject(`Error al obtener valores para el atributo ID ${attr.id}`);
-          } else {
-            resolve(values);
-          }
-        });
-      });
 
+      const values = await atributovalor.getAllatr(attr.id);
+
+      if (!values || values.length === 0) {
+        //return res.status(404).json({ message: `Error al obtener valores para el atributo ID ${attr.id}` + this.name });
+      }
       // Asignar los valores al atributo
       attr.values = values;
       return attr;
-    }));
 
-    //console.log(atributosConValores);
+    }));
+    console.log("atributosConValores: " + atributosConValores);
 
     res.render("Productos/edit", { producto, categorias, marcas, activos, compania, variantes, atributos: atributosConValores, });
   }
@@ -287,66 +163,75 @@ exports.editProductoForm = async (req, res) => {
   }
 };
 
-exports.editProducto = (req, res) => {
-  const { id } = req.params;
-
-  //const datosFormulario = req.body;
-  //console.log(datosFormulario);
-  const archivoSubido = req.file;
-
-  // if (!archivoSubido) {
-  //   console.log("⚠️ No se subió ninguna imagen");
-  //   return res.status(400).send("Debe seleccionar una imagen");
-  // }
-
-  // console.log("📝 Datos:", datosFormulario);
-  // console.log("📁 Imagen:", archivoSubido);
-
-
-
-  //res.send("Producto editado y archivo recibido");
-
-  const { codigo, nombre, descripcion, idcat, idmar, tipo, precio, preciorebaja, stock, impuesto, imagen, imagen_u } = req.body;
-  let imagenUrl = null;
-  // Si se ha subido una nueva imagen, almacenamos la URL
-  try {
-    if (archivoSubido) {
-      const nombreArchivo = archivoSubido.filename;
-      const rutaLocal = archivoSubido.path;
-      console.log("nombreArchivo:", nombreArchivo);
-      console.log("rutaLocal:", rutaLocal);
-      console.log("guarda el archivo en FTP hostinger:");
-      uploadToHostinger(rutaLocal, nombreArchivo, res.locals.idcia);
-      imagenUrl = 'https:/industrialcentereirl.com/uploads/' + res.locals.idcia + '/' + req.file.filename;
-    }
-    else {
-      imagenUrl = imagen_u;
-    }
-  } catch (error) {
-    res.status(500).send("❌ Error subiendo la imagen.");
+exports.editProducto = async (req, res) => {
+  if (!req.session.user) {
+    return res.redirect("/");
   }
+  try {
+    const { id } = req.params;
 
-  const producto = { codigo, nombre, descripcion, idcat, idmar, tipo, precio, preciorebaja, stock, impuesto, imagen };
-  producto.imagen = imagenUrl;
-  console.log(producto);
-  Producto.update(id, producto, (err) => {
-    if (err) {
-      return res.status(500).send("Error al actualizar Producto");
+    //const datosFormulario = req.body;
+    //console.log(datosFormulario);
+    const archivoSubido = req.file;
+
+    // if (!archivoSubido) {
+    //   console.log("⚠️ No se subió ninguna imagen");
+    //   return res.status(400).send("Debe seleccionar una imagen");
+    // }
+
+    // console.log("📝 Datos:", datosFormulario);
+    // console.log("📁 Imagen:", archivoSubido);
+
+
+
+    //res.send("Producto editado y archivo recibido");
+
+    const { codigo, nombre, descripcion, idcat, idmar, tipo, precio, preciorebaja, stock, impuesto, imagen, imagen_u } = req.body;
+    let imagenUrl = null;
+    // Si se ha subido una nueva imagen, almacenamos la URL
+    try {
+      if (archivoSubido) {
+        const nombreArchivo = archivoSubido.filename;
+        const rutaLocal = archivoSubido.path;
+        console.log("nombreArchivo:", nombreArchivo);
+        console.log("rutaLocal:", rutaLocal);
+        console.log("guarda el archivo en FTP hostinger:");
+        uploadToHostinger(rutaLocal, nombreArchivo, res.locals.idcia);
+        imagenUrl = 'https:/industrialcentereirl.com/uploads/' + res.locals.idcia + '/' + req.file.filename;
+      }
+      else {
+        imagenUrl = imagen_u;
+      }
+    } catch (error) {
+      res.status(500).send("❌ Error subiendo la imagen.");
     }
+
+    const producto = { codigo, nombre, descripcion, idcat, idmar, tipo, precio, preciorebaja, stock, impuesto, imagen };
+    producto.imagen = imagenUrl;
+    console.log(producto);
+
+    const resultado = await Producto.update(id, producto);
     return res.json({ success: true, message: 'Producto Actualizado exitosamente.' });
-    //res.redirect("/productos");
-  });
+
+  } catch (error) {
+    console.error('Error al actulizar cliente:', error);
+    res.status(500).json({ message: 'Error al actualizar cliente' });
+  }
 };
 
-exports.deleteProducto = (req, res) => {
-  const { id } = req.params;
+exports.deleteProducto = async (req, res) => {
+  if (!req.session.user) {
+    return res.redirect("/");
+  }
+  try {
+    const { id } = req.params;
 
-  Producto.delete(id, (err) => {
-    if (err) {
-      return res.status(500).send("Error al eliminar Producto");
-    }
+    const resultado = await Producto.delete(id);
     res.redirect("/productos");
-  });
+  } catch (error) {
+    console.error('Error al actulizar cliente:', error);
+    res.status(500).json({ message: 'Error al actualizar cliente' });
+  }
 };
 
 exports.createvariante = async (req, res) => {
@@ -362,7 +247,11 @@ exports.createvariante = async (req, res) => {
     });
     //console.log(result);
 
-    await variante.agregaAtributos(result.insertId, attributeValues);
+    const atributosArray = Array.isArray(attributeValues)
+      ? attributeValues
+      : [attributeValues];
+
+    await variante.agregaAtributos(result.insertId, atributosArray);
     return res.json({ success: true, message: 'Producto Actualizado exitosamente.' });
     //await variante.agregaAtributos(result.insertId, attributeValues);
     //res.redirect(`/productos/edit/${req.params.id}`);
@@ -395,16 +284,11 @@ exports.updatevariante = async (req, res) => {
   }
 };
 
-exports.getVarianteProdID = (req, res) => {
+exports.getVarianteProdID = async (req, res) => {
   const id = req.params.id;
   const idprod = req.params.idprod;
-
-  variante.getVarianteProdID(idprod, id, (err, VarianteProd) => {
-    if (err) {
-      console.error("Error al obtener variante " + err);
-      return res.status(500).send("Error al obtener variante " + err);
-    }
-    return res.json({ success: true, message: '', VarianteProd: VarianteProd });
-  });
+  console.log("VarianteProd: " + VarianteProd)
+  const VarianteProd = await variante.getVarianteProdID(idprod, id);
+  return res.json({ success: true, message: '', VarianteProd: VarianteProd });
 }
 

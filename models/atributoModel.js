@@ -1,57 +1,54 @@
-const db = require('../config/db');  // Si tienes un archivo de configuración para la DB
+const db = require('../config/db'); // Usamos conexión en modo promesa
 
 class Atributo {
-    static getAll(idcia, callback) {
+  static async getAll(idcia) {
+    try {
       console.log("busca el atributo idcia=" + idcia);
-      db.query("select * from atributos where idcia=?", [idcia], (err, results) => {
-        if (err) {
-          return callback(err);
-        }
-        console.log(results);
-        callback(null, results);
-      });
-    }
-  
-    static getById(id, callback) {
-      db.query("SELECT * FROM atributos WHERE id = ?", [id], (err, results) => {
-        if (err) {
-          return callback(err);
-        }
-        callback(null, results[0]);
-      });
-    }
-  
-    static create(atributos, callback) {
-      console.log(atributos);
-      db.query("INSERT INTO atributos SET ?", atributos, (err, results) => {
-        if (err) {
-          console.log(err);
-          return callback(err);
-        }
-        callback(null, results);
-      });
-    }
-  
-    static update(id, atributos, callback) {
-      db.query("UPDATE atributos SET ? WHERE id = ?",
-        [atributos, id],
-        (err, results) => {
-          if (err) {
-            return callback(err);
-          }
-          callback(null, results);
-        }
-      );
-    }
-  
-    static delete(id, callback) {
-      db.query("DELETE FROM atributos WHERE id = ?", [id], (err, results) => {
-        if (err) {
-          return callback(err);
-        }
-        callback(null, results);
-      });
+      const [results] = await db.query("SELECT * FROM atributos WHERE idcia = ?", [idcia]);
+      console.log(results);
+      return results;
+    } catch (err) {
+      throw err;
     }
   }
-  
-  module.exports = Atributo;
+
+  static async getById(id) {
+    try {
+      const [results] = await db.query("SELECT * FROM atributos WHERE id = ?", [id]);
+      return results[0];
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async create(atributos) {
+    try {
+      console.log(atributos);
+      const [results] = await db.query("INSERT INTO atributos SET ?", [atributos]);
+      return results;
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+
+  static async update(id, atributos) {
+    try {
+      const [results] = await db.query("UPDATE atributos SET ? WHERE id = ?", [atributos, id]);
+      return results;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async delete(id) {
+    try {
+      const [results] = await db.query("DELETE FROM atributos WHERE id = ?", [id]);
+      return results;
+    } catch (err) {
+      throw err;
+    }
+  }
+}
+
+module.exports = Atributo;

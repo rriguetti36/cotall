@@ -1,70 +1,63 @@
-
-const db = require('../config/db');  // Si tienes un archivo de configuración para la DB
+const db = require('../config/db');  // Configuración de la base de datos
 
 class Producto {
-  static getAll(idcia, callback) {
-
-    var query = `SELECT a.*, ifnull(b.nombre,'Sin Información') categoria,
-                case a.tipo
-                    when 1 then 'Simple'
-                    when 2 then 'Variado'
-                    when 3 then 'Grupo'
-                    when 4 then 'Servicio'
-                    when 5 then 'Virtual'
-                end as tipop    
-                FROM productos a 
-                left join categorias b on a.idcat=b.id
-                where a.idcia = ?
-                order by id desc`
-
-    db.query(query, [idcia], (err, results) => {
-      if (err) {
-        return callback(err);
-      }
-      callback(null, results);
-    });
+  static async getAll(idcia) {
+    const query = `
+      SELECT a.*, IFNULL(b.nombre,'Sin Información') categoria,
+        CASE a.tipo
+          WHEN 1 THEN 'Simple'
+          WHEN 2 THEN 'Variado'
+          WHEN 3 THEN 'Grupo'
+          WHEN 4 THEN 'Servicio'
+          WHEN 5 THEN 'Virtual'
+        END AS tipop
+      FROM productos a 
+      LEFT JOIN categorias b ON a.idcat = b.id
+      WHERE a.idcia = ?
+      ORDER BY id DESC
+    `;
+    try {
+      const [results] = await db.query(query, [idcia]);
+      return results;
+    } catch (err) {
+      throw err;
+    }
   }
 
-  static getById(id, callback) {
-    db.query("SELECT * FROM productos WHERE id = ?", [id], (err, results) => {
-      if (err) {
-        return callback(err);
-      }
-      callback(null, results[0]);
-    });
+  static async getById(id) {
+    try {
+      const [results] = await db.query("SELECT * FROM productos WHERE id = ?", [id]);
+      return results[0];
+    } catch (err) {
+      throw err;
+    }
   }
 
-  static create(producto, callback) {
-    console.log(producto);
-    db.query("INSERT INTO productos SET ?", producto, (err, results) => {
-      if (err) {
-        console.log(err);
-        return callback(err);
-      }
-      callback(null, results);
-    });
+  static async create(producto) {
+    try {
+      const [results] = await db.query("INSERT INTO productos SET ?", producto);
+      return results;
+    } catch (err) {
+      throw err;
+    }
   }
 
-  static update(id, producto, callback) {
-    db.query(
-      "UPDATE productos SET ? WHERE id = ?",
-      [producto, id],
-      (err, results) => {
-        if (err) {
-          return callback(err);
-        }
-        callback(null, results);
-      }
-    );
+  static async update(id, producto) {
+    try {
+      const [results] = await db.query("UPDATE productos SET ? WHERE id = ?", [producto, id]);
+      return results;
+    } catch (err) {
+      throw err;
+    }
   }
 
-  static delete(id, callback) {
-    db.query("DELETE FROM productos WHERE id = ?", [id], (err, results) => {
-      if (err) {
-        return callback(err);
-      }
-      callback(null, results);
-    });
+  static async delete(id) {
+    try {
+      const [results] = await db.query("DELETE FROM productos WHERE id = ?", [id]);
+      return results;
+    } catch (err) {
+      throw err;
+    }
   }
 }
 
