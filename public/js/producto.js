@@ -3,14 +3,14 @@ $(document).ready(function () {
   const $divprecio = $('#divprecio');
   const $divpreciorebaja = $('#divpreciorebaja');
   const $divstock = $('#divstock');
-
+  $('.multi-select').select2();
   // Asegurarse de que la visibilidad esté bien al cargar
   if ($('#tipo').val() == '2') {
     $tabVariantes.show();
     $divprecio.hide();
     $divpreciorebaja.hide();
     $divstock.hide();
-  }else {
+  } else {
     $tabVariantes.hide();
     $divprecio.show();
     $divpreciorebaja.show();
@@ -31,7 +31,6 @@ $(document).ready(function () {
       $divstock.show();
     }
   });
-
 
   $('#contenedor-actualiza').hide();
 
@@ -176,6 +175,47 @@ $(document).ready(function () {
     });
   });
 
+  $('#frmAtributos').submit(function (e) {
+    e.preventDefault();
+
+    //const formData = $(this).serialize();
+    // const form = document.getElementById('frmAtributos');
+    // const formData = new FormData(form);
+    const formData = $(this).serialize(); // genera algo como: atributos[]=1&atributos[]=2&idProducto=5
+    const id = $('#idProducto').val();
+
+    var url = `/productos/${id}/createproductoatr`;
+
+    $.ajax({
+      url: url,
+      method: 'POST',
+      data: formData,
+      success: function (data) {
+        if (data.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Actualizado!',
+            text: 'Este producto se actualizo satisfactoriamente.',
+            confirmButtonText: 'Aceptar'
+          });
+          window.location.href = `/productos/edit/${id}`;
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: data.message || 'No se pudo guardar.',
+            confirmButtonText: 'Cerrar'
+          });
+
+          //msgDiv.addClass('alert-danger').text(data.message || 'Error al guardar.');
+        }
+      },
+      error: function () {
+        //$('#mensaje').removeClass('d-none').addClass('alert-danger').text('Error en la solicitud.');
+      }
+    });
+  });
+
   $('.btn-ver').on('click', function (e) {
     e.preventDefault();
     $('#panelVariantes').addClass('show');
@@ -232,8 +272,16 @@ $(document).ready(function () {
     $("#stockvar").val('0');
   });
 
+  $('#agregarAtributos').on('click', function () {
+    $('#panelAtributos').addClass('show');
+  });
+
   $('#cerrarPanel').on('click', function () {
     $('#panelVariantes').removeClass('show');
+  });
+
+  $('#cerrarPanela').on('click', function () {
+    $('#panelAtributos').removeClass('show');
   });
 
   $('.select-text').on('click', function () {

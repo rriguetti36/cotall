@@ -49,6 +49,41 @@ class Atributo {
       throw err;
     }
   }
+
+  static async agregaprodatributos(idprod, idatr) {
+      try {
+        const promises = idatr.map(id => {
+          return db.query("INSERT INTO productoatributo SET ?", {
+            idprod: idprod,
+            idatr: id
+          });
+        });
+        await Promise.all(promises);
+        return true;  // Todo salió bien
+      } catch (err) {
+        throw err;
+      }
+    }
+
+    static async deleteproductoatr(idprod) {
+      try {
+        const [results] = await db.query("DELETE FROM productoatributo WHERE idprod = ?", [idprod]);
+        return results;
+      } catch (err) {
+        throw err;
+      }
+    }
+    
+    static async getproductoatr(idprod) {
+      try {
+        console.log("busca el atributo por producto =" + idprod);
+        const [results] = await db.query("SELECT b.* FROM productoatributo a join atributos b on a.idatr=b.id WHERE a.idprod = ?", [idprod]);
+        console.log(results);
+        return results;
+      } catch (err) {
+        throw err;
+      }
+    }
 }
 
 module.exports = Atributo;

@@ -147,7 +147,11 @@
               <div class="card">
                 <div class="card-header">
                   <h5 class="card-title">Variantes del producto</h5>
-                  <button id="mostrarTarjeta" class="btn btn-primary">Agregar</button>
+                  <div>
+                    <button id="agregarAtributos" class="btn btn-primary me-2">Agregar Atributos</button>
+                    <button id="mostrarTarjeta" class="btn btn-primary">Agregar Variantes</button>
+                  </div>
+                  
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
@@ -208,7 +212,7 @@
                         <div id="contenedor-actualiza" class="mb-3 col-md-6"></div>
                         <div id="contenedor-guarda" class="mb-3 col-md-6">
                           <label class="form-label">Seleccione el atributo</label><br>
-                          <% atributos.forEach(attr => { %>
+                          <% atributosprod.forEach(attr => { %>
                             <label><%= attr.nombre %></label>
                             <select id="<%= attr.nombre %>" class="single-select-placeholder" name="attributeValues" required>
                               <% attr.values.forEach(val => { %>
@@ -248,6 +252,39 @@
               </div>
             </div>
             
+            <div id="panelAtributos" class="slide-panel">
+              <!-- Tu tarjeta completa acá -->
+              <div class="mb-3 col-md-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h5 class="card-title">Agregar Atributos</h5>
+                    <button id="cerrarPanela" class="btn btn-sm btn-danger float-end">×</button>
+                  </div>
+                  <div class="card-body">
+                    <form id="frmAtributos">
+                      <div class="row">
+                        <!-- <div id="contenedor-actualiza" class="mb-3 col-md-6"></div> -->
+                        <div id="contenedor-guarda_atr" class="mb-3 col-md-12">
+                          <label class="form-label">Seleccionar atributos</label><br>
+                          <select class="multi-select" name="atributos[]" multiple="multiple">
+                            <!-- <% atributos.forEach(attr => { %>
+                              <option value="<%= attr.id %>"><%= attr.nombre %></option>
+                            <% }) %> -->
+                            <% atributos.forEach(attr => { %>
+                              <option value="<%= attr.id %>" 
+                                <%= atributosprod.some(a => a.id === attr.id) ? 'selected' : '' %>>
+                                <%= attr.nombre %>
+                              </option>
+                            <% }) %>
+                        </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Actualizar atributos</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
             
           </div>
         </div>
@@ -261,6 +298,7 @@
 <script src="/theme/vendor/sweetalert2/dist/sweetalert2.min.js"></script>
 <script src="/theme/js/plugins-init/sweetalert.init.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script src="/public/js/producto.js"></script>
 
 <!-- <script>

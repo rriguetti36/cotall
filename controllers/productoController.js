@@ -97,51 +97,59 @@ exports.editProductoForm = async (req, res) => {
   try {
     //console.log(res.locals.idcia);
     const producto = await Producto.getById(id);
-    console.log("producto: " + producto);
+    console.log("producto: ", producto);
     if (!producto || producto.length === 0) {
       return res.status(404).json({ message: 'No se encontraron producto para esta compañía' + this.name });
     }
 
     const categorias = await Tablas.Categorias(res.locals.idcia);
-    console.log("categorias: " + categorias);
+    console.log("categorias: ", categorias);
     if (!categorias || categorias.length === 0) {
       return res.status(404).json({ message: 'No se encontraron categorias para esta compañía' + this.name });
     }
 
     const marcas = await Tablas.Marcas(res.locals.idcia);
-    console.log("marcas: " + marcas);
+    console.log("marcas: ", marcas);
     if (!marcas || marcas.length === 0) {
       return res.status(404).json({ message: 'No se encontraron marcas para esta compañía' + this.name });
     }
 
     const activos = await Tablas.activo(res.locals.idcia);
-    console.log("activos: " + activos);
+    console.log("activos: ", activos);
     if (!activos || activos.length === 0) {
       return res.status(404).json({ message: 'No se encontraron activos para esta compañía' + this.name });
     }
 
     const compania = await companias.getById(res.locals.idcia);
-    console.log("compania: " + compania);
+    console.log("compania: ", compania);
     if (!compania || compania.length === 0) {
       return res.status(404).json({ message: 'No se encontraron datos para esta compañía' + this.name });
     }
 
     // Obtener variantes
     const variantes = await variante.getByproductoId(id);
-    console.log("variantes: " + variantes);
+    console.log("variantes: ", variantes);
     if (!variantes || variantes.length === 0) {
       //return res.status(404).json({ message: 'No se encontraron variante para esta producto' + this.name });
     }
 
     // Obtener atributos
     const atributos = await atributo.getAll(res.locals.idcia);
-    console.log("atributos: " + atributos);
+    console.log("atributos: ", atributos);
     if (!atributos || atributos.length === 0) {
       //return res.status(404).json({ message: 'No se encontraron atributos para esta producto' + this.name });
     }
 
+    // Obtener atributos x producto
+    const atributosprod = await atributo.getproductoatr(id);
+    console.log("atributosprod: ", atributosprod);
+    if (!atributosprod || atributosprod.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron atributos para esta producto' + this.name });
+    }
+
+
     // Obtener valores de atributos
-    const atributosConValores = await Promise.all(atributos.map(async (attr) => {
+    const atributosConValores = await Promise.all(atributosprod.map(async (attr) => {
 
       const values = await atributovalor.getAllatr(attr.id);
 
@@ -153,9 +161,9 @@ exports.editProductoForm = async (req, res) => {
       return attr;
 
     }));
-    console.log("atributosConValores: " + atributosConValores);
+    //console.log("atributosConValores: ", atributosConValores);
 
-    res.render("Productos/edit", { producto, categorias, marcas, activos, compania, variantes, atributos: atributosConValores, });
+    res.render("Productos/edit", { producto, categorias, marcas, activos, compania, variantes, atributos, atributosprod: atributosConValores, });
   }
   catch (error) {
     console.error("Error en el proceso:", error);
@@ -287,8 +295,24 @@ exports.updatevariante = async (req, res) => {
 exports.getVarianteProdID = async (req, res) => {
   const id = req.params.id;
   const idprod = req.params.idprod;
-  console.log("VarianteProd: " + VarianteProd)
+
   const VarianteProd = await variante.getVarianteProdID(idprod, id);
+  console.log("VarianteProd: " + VarianteProd)
   return res.json({ success: true, message: '', VarianteProd: VarianteProd });
 }
 
+exports.createproductoatr = async (req, res) => {
+  try {
+    console.log("guarda producto atributo");
+    const atributos = req.body.atributos; // ya llega como array
+    console.log('Atributos:', atributos); // ['1', '2']
+
+    await atributo.deleteproductoatr(req.params.id);
+    await atributo.agregaprodatributos(req.params.id, atributos);
+    return res.json({ success: true, message: 'Producto Actualizado exitosamente.' });
+  } catch (err) {
+    console.error("Error al agregar atributos al producto:", err);
+    return res.json({ success: true, message: 'Error al agregar atributos al producto.' });
+    //res.status(500).send("Error al guardar la variante");
+  }
+};
