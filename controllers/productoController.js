@@ -144,7 +144,7 @@ exports.editProductoForm = async (req, res) => {
     const atributosprod = await atributo.getproductoatr(id);
     console.log("atributosprod: ", atributosprod);
     if (!atributosprod || atributosprod.length === 0) {
-      return res.status(404).json({ message: 'No se encontraron atributos para esta producto' + this.name });
+      //eturn res.status(404).json({ message: 'No se encontraron atributos para esta producto' + this.name });
     }
 
 
