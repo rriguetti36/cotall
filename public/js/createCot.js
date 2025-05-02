@@ -52,6 +52,13 @@ $(document).ready(function () {
         $("#subtotal").val(importe.toFixed(2));
     });
 
+    $("#preciocot").change(function () {
+        var precio  = $(this).val();
+        var cantidad = $("#cantidad").val();
+        var importe = precio * cantidad
+        $("#subtotal").val(importe.toFixed(2));
+    });
+
     $('#agregarProducto').click(function () {
         // Recoger los valores de los inputs
         const idproducto = $('#single-select_p').val();
@@ -88,7 +95,7 @@ $(document).ready(function () {
             nuevaFila.append('<td>' + umedida + '</td>');
             nuevaFila.append('<td>' + precio + '</td>');
             nuevaFila.append('<td class="importe">' + importe + '</td>');
-            nuevaFila.append('<td><div class="d-flex"><a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i class="fa fa-pencil"></i></a><a href="#" class="eliminarFila btn btn-danger shadow btn-xs sharp"><i class="fa fa-trash"></i></a></div></td>');
+            nuevaFila.append('<td><div class="d-flex"><a href="#" class="eliminarFila btn btn-danger shadow btn-xs sharp"><i class="fa fa-trash"></i></a></div></td>');
 
             // Agregar la nueva fila a la tabla
             $('#tabla-productos tbody').append(nuevaFila);
