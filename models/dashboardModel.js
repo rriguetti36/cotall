@@ -61,7 +61,7 @@ class dashboard {
                         group by b.nombres, b.apellidos`
 
             const [rows] = await db.query(query, [idcia]);
-            return rows[0];
+            return rows;
         } catch (error) {
             console.error('Error al obtener alojamiento:', error);
             throw error;
@@ -70,19 +70,23 @@ class dashboard {
 
     async clientestop(idcia){
         try {
-            var query = `select d.cottot, b.razonsocial nombres, c.estado , count(*) tot
+            var query = `select d.cottot, b.razonsocial nombres, 
+sum(case when c.estado=1 then 1 else 0 end) cotiz,
+sum(case when cv.estado=3 then 1 else 0 end) ventas
                         from cotizacion_cab a 
                         join clientes b on a.idcli=b.id and a.idcia=b.idcia
-                        join estados_cot c on a.id=c.idcot
                         join (
                             select a.idcia, count(*) cottot
                             from cotizacion_cab a 
                             join clientes b on a.idcli=b.id and a.idcia=b.idcia
                             group by a.idcia
                         ) d on a.idcia=d.idcia
-                        where a.idcia=? and c.estado in (1,3)
-                        group by d.cottot, b.razonsocial, c.estado
-                        order by 1 desc`
+                        join estados_cot c on a.id=c.idcot and c.estado=1
+                        left join estados_cot cv on a.id=cv.idcot and cv.estado=3
+                        where a.idcia=?
+                        group by d.cottot, b.razonsocial
+                        order by 3 desc
+                        LIMIT 10`
 
             const [rows] = await db.query(query, [idcia]);
             return rows;

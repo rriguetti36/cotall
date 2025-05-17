@@ -1,3 +1,61 @@
+<style>
+    #horizontal-bar-clientes {
+        height: 500px;
+        /* puedes ajustar esto según lo que necesites */
+    }
+    .ct-series-b .ct-bar, .ct-series-b .ct-line, .ct-series-b .ct-point, .ct-series-b .ct-slice-donut {
+    stroke: #339143;
+    }
+    /* .ct-chart {
+        max-height: 15.7rem;
+    }
+
+    .ct-chart .ct-label {
+        fill: #a3afb7;
+        color: #a3afb7;
+        font-size: 0.75rem;
+        line-height: 1;
+    }
+
+    .ct-grid {
+        stroke: rgba(49, 58, 70, 0.1);
+    }
+
+    .ct-chart.simple-pie-chart-chartist .ct-label {
+        color: #ffffff;
+        fill: #ffffff;
+        font-size: 0.625rem;
+    }
+
+    .ct-chart .ct-series.ct-series-a .ct-bar,
+    .ct-chart .ct-series.ct-series-a .ct-line,
+    .ct-chart .ct-series.ct-series-a .ct-point,
+    .ct-chart .ct-series.ct-series-a .ct-slice-donut {
+        stroke: #3498db;
+    } */
+
+    .chartist-tooltip {
+        position: absolute;
+        display: inline-block;
+        opacity: 0;
+        min-width: 0.625rem;
+        padding: 0.125rem 0.625rem;
+        border-radius: 0.1875rem;
+        background: #313a46;
+        color: #ffffff;
+        text-align: center;
+        pointer-events: none;
+        z-index: 1;
+        -webkit-transition: opacity .2s linear;
+        -moz-transition: opacity .2s linear;
+        -o-transition: opacity .2s linear;
+        transition: opacity .2s linear;
+    }
+
+    .chartist-tooltip.tooltip-show {
+        opacity: 1;
+    }
+</style>
 <div class="row">
     <div class="col-xl-3 col-sm-6">
         <div class="card gradient-1 card-bx">
@@ -83,15 +141,18 @@
                         <h4 class="mb-0">5 Productos mas cotizados</h4>
                     </div>
                     <div class="card-body">
-                        <% productos.forEach(producto => { %>
+                        <% productos.forEach(producto=> { %>
                             <div class="progress mb-4" style="height:30px;">
                                 <div class="progress-bar gradient-5 progress-animated" style="width:100%; height:30px;"
-                                    role="progressbar"><%= producto.nombre %>
-                                    <span><%= Number(producto.prc).toFixed(2) %>% Complete</span>
+                                    role="progressbar">
+                                    <%= producto.nombre %>
+                                        <span>
+                                            <%= Number(producto.prc).toFixed(2) %>% Complete
+                                        </span>
                                 </div>
                             </div>
-                          <% }) %>
-                        
+                            <% }) %>
+
                     </div>
                 </div>
             </div>
@@ -101,7 +162,7 @@
                         <h4 class="mb-0">Asesores Cotizaciones</h4>
                     </div>
                     <div class="card-body">
-                        <div id="simple-pie"
+                        <div id="simple-pie_asesor"
                             class="ct-chart ct-golden-section simple-pie-chart-chartist chartlist-chart"></div>
                     </div>
                 </div>
@@ -115,14 +176,14 @@
                     <h4 class="card-title mb-2">Clientes que cotizaron mas</h4>
                 </div>
                 <div class="d-flex justify-content-between">
-                    <div class="d-flex me-5">
+                    <!-- <div class="d-flex me-5">
                         <h3 class="mb-0 me-2">549</h3>
                         <span>Cotizacioness</span>
                     </div>
                     <div class="d-flex me-3">
                         <h3 class="mb-0 me-2">327</h3>
                         <span>Ventas</span>
-                    </div>
+                    </div> -->
                     <div class="dropdown">
                         <a href="javascript:void(0);" class="btn-link" data-bs-toggle="dropdown" aria-expanded="false">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -149,7 +210,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <div id="horizontal-bar-clientes" class="ct-chart ct-golden-section chartlist-chart"></div>
+                <div id="horizontal-bar-clientes"></div>
             </div>
         </div>
     </div>
