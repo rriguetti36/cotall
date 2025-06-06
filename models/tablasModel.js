@@ -37,9 +37,9 @@ class Tablas {
     }
   }
 
-  static async Formapago() {
+  static async Formapago(idcia) {
     try {
-      const [results] = await db.query("SELECT * FROM formapagos");
+      const [results] = await db.query("SELECT * FROM formapagos WHERE idcia = ?", [idcia]);
       return results;
     } catch (err) {
       throw err;

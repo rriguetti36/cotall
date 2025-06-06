@@ -43,7 +43,7 @@ exports.creaCotizacionForm = async (req, res) => {
   try {
     const clientes = await Cotizacion.buscaAllCli(res.locals.idcia);
     const monedas = await Tablas.Monedas();
-    const formapagos = await Tablas.Formapago();
+    const formapagos = await Tablas.Formapago(res.locals.idcia);
     const formaentregas = await Tablas.Formaentrega();
     const productos = await Cotizacion.buscaAllProd(res.locals.idcia);
     const medidas = await Tablas.umedidas();
@@ -99,6 +99,7 @@ exports.crearCotizacion = async (req, res) => {
         total: 0,
         observacion: producto.observacion,
       };
+      console.log(detalleCotizacion);
       await CotizacionDet.crearDetalleCotizacion(detalleCotizacion);
     }
 
