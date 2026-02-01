@@ -22,7 +22,7 @@
 		}
 	}
 	
-	var lineAnimatedChart = function(){
+	/* var lineAnimatedChart = function(){
 		    
 		var chart = new Chartist.Line('#smil-animations', {
 			labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
@@ -157,8 +157,6 @@
   
   
 	}
-	
-	
 	var scatterChart = function(){
 			  //Line Scatter Diagram
 			  var times = function(n) {
@@ -198,7 +196,6 @@
 			  
 			  new Chartist.Line('#scatter-diagram', data, options, responsiveOptions);
 	}
-	
 	var simpleLineChart = function(){
 		//Simple line chart
 		new Chartist.Line('#simple-line-chart', {
@@ -820,7 +817,7 @@
 			}
 			window.__anim0987432598723 = setTimeout(chart.update.bind(chart), 8000);
 		});
-	}
+	} */
 	
 	/* Function ============ */
 	return {
@@ -855,27 +852,27 @@
 		
 		resize:function(){
 			setChartWidth();	
-			lineAnimatedChart();
-			scatterChart();	
-			simpleLineChart();	
-			lineTooltipsChart();		
-			withAreaChart();
-			biPolarLineChart();
-			svgAnimationChart();
-			lineSmoothingChart();
-			biPolarBarChart();
-			overlappingBarsChart();
-			multiLineChart();
-			stackedBarChart();
-			horizontalBarChart();
-			extremeChart();
-			labelPlacementChart();
-			animatingDonutChart();
-			simplePieChart();
-			pieChart();
-			gaugeChart();
-			differentSeriesChart();
-			svgDotAnimationChart();
+			//lineAnimatedChart();
+			//scatterChart();	
+			// simpleLineChart();	
+			// lineTooltipsChart();		
+			// withAreaChart();
+			// biPolarLineChart();
+			// svgAnimationChart();
+			// lineSmoothingChart();
+			// biPolarBarChart();
+			// overlappingBarsChart();
+			// multiLineChart();
+			// stackedBarChart();
+			// horizontalBarChart();
+			// extremeChart();
+			// labelPlacementChart();
+			// animatingDonutChart();
+			// simplePieChart();
+			// pieChart();
+			// gaugeChart();
+			// differentSeriesChart();
+			// svgDotAnimationChart();
 		}
 	}
 

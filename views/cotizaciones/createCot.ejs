@@ -1,7 +1,23 @@
 <style>
-div, span, ol, ul {
+/* div, span, ol, ul {
     scrollbar-width: thin;
     overflow: visible !important;
+} */
+ /* Scroll fino solo donde tiene sentido */
+.table-responsive {
+    scrollbar-width: thin;
+}
+
+/* Permitir overflow SOLO donde hay dropdowns */
+.card-body,
+.modal-body,
+.form-wizard {
+    overflow: visible;
+}
+
+/* Fix específico para Select2 */
+.select2-container {
+    z-index: 1055; /* arriba del modal */
 }
 </style>
 <div class="row page-titles">
