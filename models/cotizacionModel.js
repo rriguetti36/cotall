@@ -10,7 +10,8 @@ class Cotizacion {
                   JOIN clientes c ON a.idcli=c.id
                   JOIN estados_cot d ON a.id=d.idcot
                   WHERE a.idcia = ? AND d.id = (SELECT MAX(id) FROM estados_cot WHERE idcot=a.id)
-                  ORDER BY a.id DESC`;
+                  ORDER BY a.id DESC
+                  LIMIT 100`;
     const [results] = await db.query(query, [idcia]);
     return results;
   }
